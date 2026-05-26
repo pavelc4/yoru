@@ -179,7 +179,8 @@ fi
 echo "--------------------------------------------------------"
 success "Yoru Dotfiles installation completed successfully!"
 info "You can now test running quickshell using (works in any shell):"
-echo -e "  ${BOLD}env QML2_IMPORT_PATH=~/.config/quickshell/yoru/imports quickshell -p ~/.config/quickshell/yoru/shell.qml${NC}"
+echo -e "  ${BOLD}env QML2_IMPORT_PATH=\$HOME/.config/quickshell/yoru/imports quickshell -p \$HOME/.config/quickshell/yoru/shell.qml${NC}"
 info "Or refresh Hyprland to load globally: ${BOLD}hyprctl reload${NC}"
+
 
 echo "--------------------------------------------------------"
