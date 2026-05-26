@@ -207,8 +207,9 @@ run_install() {
         read -rp "Would you like to exit your current Hyprland session to load Yoru completely fresh? [y/N] " exit_choice
         if [[ "$exit_choice" =~ ^[Yy]$ ]]; then
             info "Exiting Hyprland..."
-            hyprctl dispatch exit
+            pkill Hyprland || killall Hyprland
         fi
+
     fi
 
     echo "--------------------------------------------------------"

@@ -1,10 +1,11 @@
 require("hyprland.lib")
 require("hyprland.variables")
 
-local qsScripts = "$HOME/.config/quickshell/$qsConfig/scripts"
-local hyprScripts = "$HOME/.config/hypr/hyprland/scripts"
-local qsIpcCall = "qs -c $qsConfig ipc call"
+local qsScripts = HOME .. "/.config/quickshell/yoru/scripts"
+local hyprScripts = HOME .. "/.config/hypr/hyprland/scripts"
+local qsIpcCall = "qs -c yoru ipc call"
 local qsIsAlive = qsIpcCall .. " TEST_ALIVE"
+
 
 hl.bind("SUPER + SUPER_L", hl.dsp.global("quickshell:searchToggleRelease"), { description = "Shell: Toggle search" })
 hl.bind("SUPER + SUPER_R", hl.dsp.global("quickshell:searchToggleRelease"))
