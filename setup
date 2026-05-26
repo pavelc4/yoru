@@ -193,12 +193,31 @@ run_install() {
         link_config "$REPO_DIR/foot" "$HOME/.config/foot" "Foot Terminal"
     fi
 
+    # Kill old quickshell instances to prevent duplicates
+    info "Terminating any old quickshell instances..."
+    pkill quickshell || true
+    pkill qs || true
+
+    # Reload active Hyprland configuration
+    if command -v hyprctl &> /dev/null && hyprctl activewindow &> /dev/null; then
+        info "Hyprland session detected! Reloading configuration..."
+        hyprctl reload
+        
+        echo ""
+        read -rp "Would you like to exit your current Hyprland session to load Yoru completely fresh? [y/N] " exit_choice
+        if [[ "$exit_choice" =~ ^[Yy]$ ]]; then
+            info "Exiting Hyprland..."
+            hyprctl dispatch exit
+        fi
+    fi
+
     echo "--------------------------------------------------------"
     success "Yoru Dotfiles installation completed successfully!"
     info "You can now test running quickshell using (works in any shell):"
     echo -e "  ${BOLD}env QML2_IMPORT_PATH=\$HOME/.config/quickshell/yoru/imports quickshell -p \$HOME/.config/quickshell/yoru/shell.qml${NC}"
-    info "Or refresh Hyprland to load globally: ${BOLD}hyprctl reload${NC}"
+    info "Or refresh Hyprland manually: ${BOLD}hyprctl reload${NC}"
     echo "--------------------------------------------------------"
+
 }
 
 # -----------------------------------------------------------------------------
