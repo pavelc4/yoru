@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
-import Caelestia.Components
-import Caelestia.Config
+import Yoru.Components
+import Yoru.Config
 import qs.components
 import qs.services
 

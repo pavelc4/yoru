@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
-import Caelestia
-import Caelestia.Config
+import Yoru
+import Yoru.Config
 
 Scope {
     Connections {

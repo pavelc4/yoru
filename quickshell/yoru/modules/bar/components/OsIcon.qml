@@ -1,5 +1,5 @@
 import QtQuick
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.effects
 import qs.services
@@ -23,11 +23,11 @@ Item {
     Loader {
         asynchronous: true
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        sourceComponent: SysInfo.isDefaultLogo ? yoruLogo : distroIcon
     }
 
     Component {
-        id: caelestiaLogo
+        id: yoruLogo
 
         Logo {
             implicitWidth: Math.round(Tokens.font.size.large * 1.6)

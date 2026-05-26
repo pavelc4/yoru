@@ -5,7 +5,7 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Services.Notifications
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.effects
 import qs.services

@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Widgets
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.containers
 import qs.components.widgets

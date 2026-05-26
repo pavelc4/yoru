@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia
+import Yoru
 import qs.components.misc
 import qs.services
 import qs.modules.controlcenter
@@ -159,7 +159,7 @@ Scope {
     LoggingCategory {
         id: lc
 
-        name: "caelestia.qml.shortcuts"
+        name: "yoru.qml.shortcuts"
         defaultLogLevel: LoggingCategory.Info
     }
 }

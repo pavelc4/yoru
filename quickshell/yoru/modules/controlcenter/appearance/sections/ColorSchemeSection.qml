@@ -5,7 +5,7 @@ import "../../../launcher/services"
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -44,7 +44,7 @@ CollapsibleSection {
                         const schemeKey = `${name} ${flavour}`;
 
                         Schemes.currentScheme = schemeKey;
-                        Quickshell.execDetached(["caelestia", "scheme", "set", "-n", name, "-f", flavour]);
+                        Quickshell.execDetached(["yoru", "scheme", "set", "-n", name, "-f", flavour]);
 
                         Qt.callLater(() => {
                             reloadTimer.restart();

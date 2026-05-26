@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Shapes
 import Quickshell
-import Caelestia.Config
-import Caelestia.Services
+import Yoru.Config
+import Yoru.Services
 import qs.components
 import qs.services
 import qs.utils

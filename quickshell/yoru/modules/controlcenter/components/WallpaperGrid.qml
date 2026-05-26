@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import ".."
 import QtQuick
-import Caelestia.Config
-import Caelestia.Models
+import Yoru.Config
+import Yoru.Models
 import qs.components
 import qs.components.controls
 import qs.components.effects

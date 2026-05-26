@@ -1,5 +1,5 @@
 import QtQuick
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.effects
 import qs.components.filedialog

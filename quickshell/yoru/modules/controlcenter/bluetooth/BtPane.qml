@@ -6,7 +6,7 @@ import "."
 import QtQuick
 import Quickshell.Bluetooth
 import Quickshell.Widgets
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls

@@ -3,8 +3,8 @@ pragma ComponentBehavior: Bound
 import "lock"
 import Quickshell
 import Quickshell.Wayland
-import Caelestia.Config
-import Caelestia.Internal
+import Yoru.Config
+import Yoru.Internal
 import qs.services
 
 Scope {

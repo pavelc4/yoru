@@ -5,7 +5,7 @@ import "../components"
 import "."
 import QtQuick
 import QtQuick.Layouts
-import Caelestia.Config
+import Yoru.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls

@@ -1,4 +1,4 @@
-import Caelestia.Config
+import Yoru.Config
 import qs.services
 
 StyledText {

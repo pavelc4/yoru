@@ -1,8 +1,8 @@
 {
   "nodes": {
-    "caelestia-cli": {
+    "yoru-cli": {
       "inputs": {
-        "caelestia-shell": [],
+        "yoru-shell": [],
         "nixpkgs": [
           "nixpkgs"
         ]
@@ -10,13 +10,13 @@
       "locked": {
         "lastModified": 1779508871,
         "narHash": "sha256-SFl2je8b423f/tIy0RTgCrWQUJiyFsAZp1Y0cccXqio=",
-        "owner": "caelestia-dots",
+        "owner": "yoru-dots",
         "repo": "cli",
         "rev": "7f300626704b7a86fe838ab58df654fa99779613",
         "type": "github"
       },
       "original": {
-        "owner": "caelestia-dots",
+        "owner": "yoru-dots",
         "repo": "cli",
         "type": "github"
       }
@@ -59,7 +59,7 @@
     },
     "root": {
       "inputs": {
-        "caelestia-cli": "caelestia-cli",
+        "yoru-cli": "yoru-cli",
         "nixpkgs": "nixpkgs",
         "quickshell": "quickshell"
       }

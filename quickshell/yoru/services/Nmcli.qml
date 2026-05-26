@@ -1280,7 +1280,7 @@ Singleton {
     LoggingCategory {
         id: lc
 
-        name: "caelestia.qml.services.nmcli"
+        name: "yoru.qml.services.nmcli"
         defaultLogLevel: LoggingCategory.Info
     }
 

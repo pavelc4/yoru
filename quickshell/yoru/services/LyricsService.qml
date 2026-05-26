@@ -4,8 +4,8 @@ import "../utils/scripts/lrcparser.js" as Lrc
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
+import Yoru
+import Yoru.Config
 import qs.utils
 
 Singleton {

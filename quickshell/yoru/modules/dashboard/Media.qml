@@ -5,8 +5,8 @@ import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Services.Mpris
-import Caelestia.Config
-import Caelestia.Services
+import Yoru.Config
+import Yoru.Services
 import qs.components
 import qs.components.controls
 import qs.services

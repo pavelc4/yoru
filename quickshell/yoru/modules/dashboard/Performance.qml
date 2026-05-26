@@ -2,8 +2,8 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Services.UPower
-import Caelestia.Config
-import Caelestia.Internal
+import Yoru.Config
+import Yoru.Internal
 import qs.components
 import qs.components.misc
 import qs.services

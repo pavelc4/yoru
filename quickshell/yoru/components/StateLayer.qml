@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Shapes
-import Caelestia.Config
+import Yoru.Config
 import qs.services
 
 MouseArea {
