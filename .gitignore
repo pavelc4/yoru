@@ -1,0 +1,4 @@
+# CMake build artifacts
+quickshell/yoru/build/
+quickshell/yoru/imports/
+*.bak*
