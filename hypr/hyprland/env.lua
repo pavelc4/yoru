@@ -15,3 +15,6 @@ hl.env("XDG_MENU_PREFIX", "plasma-")
 -- Quickshell config identity
 hl.env("qsConfig", "yoru")
 hl.env("QS_CONFIG", "yoru")
+hl.env("QML2_IMPORT_PATH", home_dir .. "/.config/quickshell/yoru/imports")
+
+
