@@ -122,7 +122,13 @@ class LauncherConfig : public ConfigObject {
                 { u"name"_s, u"Settings"_s },
                 { u"icon"_s, u"settings"_s },
                 { u"description"_s, u"Configure the shell"_s },
-                { u"command"_s, QStringList{ u"yoru"_s, u"shell"_s, u"controlCenter"_s, u"open"_s } },
+                { u"command"_s, QStringList{ u"sh"_s, u"-c"_s, u"qs -p ~/.config/quickshell/yoru/settings.qml"_s } },
+            }),
+            vmap({
+                { u"name"_s, u"Emoji"_s },
+                { u"icon"_s, u"emoji_emotions"_s },
+                { u"description"_s, u"Open emoji selector"_s },
+                { u"command"_s, QStringList{ u"sh"_s, u"-c"_s, u"pkill fuzzel || ~/.config/hypr/hyprland/scripts/fuzzel-emoji.sh copy"_s } },
             }),
         })
 

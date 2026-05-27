@@ -14,6 +14,8 @@ Item {
     required property var panels
     required property real maxHeight
 
+    property alias searchField: search
+
     readonly property int padding: Tokens.padding.large
     readonly property int rounding: Tokens.rounding.large
 
@@ -93,6 +95,8 @@ Item {
                             currentItem.onClicked();
                         else
                             currentItem.modelData.onClicked(list.currentList);
+                    } else if (text.startsWith("c ") || text.startsWith("e ")) {
+                        currentItem.doClick();
                     } else {
                         Apps.launch(currentItem.modelData);
                         root.visibilities.launcher = false;

@@ -50,6 +50,8 @@ StyledListView {
     state: {
         const text = search.text;
         const prefix = GlobalConfig.launcher.actionPrefix;
+        if (text.startsWith("c ")) return "clipboard";
+        if (text.startsWith("e ")) return "emoji";
         if (text.startsWith(prefix)) {
             for (const action of ["calc", "scheme", "variant"])
                 if (text.startsWith(`${prefix}${action} `))
@@ -62,8 +64,13 @@ StyledListView {
     }
 
     onStateChanged: {
+        console.log("[AppList] State changed to: " + state + " (search.text = '" + search.text + "')");
         if (state === "scheme" || state === "variant")
             Schemes.reload();
+        if (state === "clipboard")
+            Clipboard.reload();
+        if (state === "emoji")
+            Emojis.reload();
     }
 
     states: [
@@ -105,6 +112,28 @@ StyledListView {
             PropertyChanges {
                 model.values: M3Variants.query(search.text)
                 root.delegate: variantItem
+            }
+        },
+        State {
+            name: "clipboard"
+
+            PropertyChanges {
+                model.values: {
+                    const _ = Clipboard.list;
+                    return Clipboard.query(search.text);
+                }
+                root.delegate: clipboardItem
+            }
+        },
+        State {
+            name: "emoji"
+
+            PropertyChanges {
+                model.values: {
+                    const _ = Emojis.list;
+                    return Emojis.query(search.text);
+                }
+                root.delegate: emojiItem
             }
         }
     ]
@@ -247,9 +276,25 @@ StyledListView {
     }
 
     Component {
-        id: variantItem
+            id: variantItem
 
-        VariantItem {
+            VariantItem {
+                list: root
+            }
+        }
+
+    Component {
+        id: clipboardItem
+
+        ClipboardItem {
+            list: root
+        }
+    }
+
+    Component {
+        id: emojiItem
+
+        EmojiItem {
             list: root
         }
     }

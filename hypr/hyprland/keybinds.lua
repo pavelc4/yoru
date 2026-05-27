@@ -50,17 +50,15 @@ hl.bind("CTRL + SUPER + ALT + T", hl.dsp.global("quickshell:wallpaperSelectorRan
 hl.bind("CTRL + SUPER + SHIFT + D", hl.dsp.global("quickshell:toggleLightDark"),
     { description = "Shell: Toggle light/dark mode" })
 hl.bind("CTRL + SUPER + T", hl.dsp.exec_cmd(qsIsAlive .. " || " .. qsScripts .. "/colors/switchwall.sh"))
-hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd("killall ydotool qs quickshell; qs -c $qsConfig &"),
+hl.bind("CTRL + SUPER + R", hl.dsp.exec_cmd(qsScripts .. "/reload.sh"),
     { description = "Shell: Restart widgets" })
 hl.bind("CTRL + SUPER + P", hl.dsp.global("quickshell:panelFamilyCycle"), { description = "Shell: Cycle panel family" })
 
 --##! Utilities
 --# Screenshot, Record, OCR, Color picker, Clipboard history
-hl.bind("SUPER + V", hl.dsp.exec_cmd(
-        qsIsAlive .. " || pkill fuzzel || cliphist list | fuzzel --match-mode fzf --dmenu | cliphist decode | wl-copy"),
+hl.bind("SUPER + V", hl.dsp.exec_cmd(qsIpcCall .. " launcher searchFor \"c \""),
     { description = "Utilities: Clipboard history >> clipboard" })
-hl.bind("SUPER + Period", hl.dsp.exec_cmd(
-        qsIsAlive .. " || pkill fuzzel || " .. hyprScripts .. "/fuzzel-emoji.sh copy"),
+hl.bind("SUPER + Period", hl.dsp.exec_cmd(qsIpcCall .. " launcher searchFor \"e \""),
     { description = "Utilities: Emoji >> clipboard" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.global("quickshell:regionScreenshot"), { description = "Utilities: Screen snip" })
 hl.bind("SUPER + SHIFT + S",

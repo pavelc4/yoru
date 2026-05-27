@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Yoru.Config
 import qs.components
 import qs.modules.launcher.services
@@ -22,6 +23,7 @@ Item {
         return max;
     }
 
+    property string pendingSearch: ""
     property real offsetScale: shouldBeActive ? 0 : 1
 
     onShouldBeActiveChanged: {
@@ -58,5 +60,26 @@ Item {
             panels: root.panels
             maxHeight: root.maxHeight
         }
+
+        onLoaded: {
+            if (root.pendingSearch !== "") {
+                item.searchField.text = root.pendingSearch;
+                item.searchField.forceActiveFocus();
+                root.pendingSearch = "";
+            }
+        }
+    }
+
+    IpcHandler {
+        function searchFor(text: string): void {
+            root.visibilities.launcher = true;
+            if (content.item) {
+                content.item.searchField.text = text;
+                content.item.searchField.forceActiveFocus();
+            } else {
+                root.pendingSearch = text;
+            }
+        }
+        target: "launcher"
     }
 }

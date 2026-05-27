@@ -35,6 +35,7 @@ Singleton {
     }
 
     function query(search: string): list<var> {
+        console.log("[Searcher] query called with: '" + search + "', list size: " + list.length + ", useFuzzy: " + useFuzzy);
         search = transformSearch(search);
         if (!search)
             return [...list];
