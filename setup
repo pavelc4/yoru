@@ -78,6 +78,7 @@ run_install() {
         "curl"
         "jq"
         "wf-recorder"
+        "app2unit"
     )
 
     local MISSING_BINS=()
@@ -119,6 +120,7 @@ run_install() {
                     "curl") INSTALL_LIST+=("curl") ;;
                     "jq") INSTALL_LIST+=("jq") ;;
                     "wf-recorder") INSTALL_LIST+=("wf-recorder") ;;
+                    "app2unit") INSTALL_LIST+=("app2unit") ;;
                 esac
             done
             
