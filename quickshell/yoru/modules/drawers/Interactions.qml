@@ -22,6 +22,7 @@ CustomMouseArea {
     property bool dashboardShortcutActive
     property bool osdShortcutActive
     property bool utilitiesShortcutActive
+    property bool sidebarHoverOpened: false
 
     function withinPanelHeight(panel: Item, x: real, y: real): bool {
         const panelY = root.borderThickness + panel.y;
@@ -67,6 +68,11 @@ CustomMouseArea {
     onContainsMouseChanged: {
         if (visibilities.screenshotMode) return;
         if (!containsMouse) {
+            if (root.sidebarHoverOpened) {
+                visibilities.sidebar = false;
+                root.sidebarHoverOpened = false;
+            }
+
             // Only hide if not activated by shortcut
             if (!osdShortcutActive) {
                 visibilities.osd = false;
@@ -101,6 +107,17 @@ CustomMouseArea {
         if (fullscreen) {
             root.panels.osd.hovered = inRightPanel(panels.osdWrapper, x, y);
             return;
+        }
+
+        // Hot corner / Hover to open sidebar on top right
+        if (Config.sidebar.enabled) {
+            if (!visibilities.sidebar && x >= width - 40 && y <= 80) {
+                visibilities.sidebar = true;
+                root.sidebarHoverOpened = true;
+            } else if (root.sidebarHoverOpened && visibilities.sidebar && x < width - panels.sidebar.width - 40) {
+                visibilities.sidebar = false;
+                root.sidebarHoverOpened = false;
+            }
         }
 
         // Show bar in non-exclusive mode on hover
@@ -243,6 +260,12 @@ CustomMouseArea {
                     root.visibilities.osd = false;
                     root.panels.osd.hovered = false;
                 }
+            }
+        }
+
+        function onSidebarChanged() {
+            if (!root.visibilities.sidebar) {
+                root.sidebarHoverOpened = false;
             }
         }
 

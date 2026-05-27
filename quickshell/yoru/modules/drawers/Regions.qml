@@ -49,6 +49,15 @@ Region {
         width: panel.width * (1 - root.panels.sidebar.offsetScale) + root.borderThickness
     }
 
+    // Hot corner for top-right sidebar hover trigger
+    Region {
+        x: root.win.width - width
+        y: 0
+        width: 40
+        height: 80
+        intersection: Intersection.Subtract
+    }
+
     R {
         panel: root.panels.osdWrapper
         x: root.win.width - width
