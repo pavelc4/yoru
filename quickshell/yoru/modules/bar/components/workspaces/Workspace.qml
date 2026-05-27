@@ -36,19 +36,45 @@ ColumnLayout {
         Layout.preferredHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small * 2
 
         animate: true
+        horizontalAlignment: Text.AlignHCenter
         text: {
-            const ws = Hypr.workspaces.values.find(w => w.id === root.ws);
-            const wsName = !ws || ws.name == root.ws ? root.ws : ws.name[0];
-            let displayName = wsName.toString();
-            if (Config.bar.workspaces.capitalisation.toLowerCase() === "upper") {
-                displayName = displayName.toUpperCase();
-            } else if (Config.bar.workspaces.capitalisation.toLowerCase() === "lower") {
-                displayName = displayName.toLowerCase();
+            const style = (Config.bar.workspaces.labelStyle || "dots").toLowerCase();
+            if (style === "dots") {
+                const ws = Hypr.workspaces.values.find(w => w.id === root.ws);
+                const wsName = !ws || ws.name == root.ws ? root.ws : ws.name[0];
+                let displayName = wsName.toString();
+                if (Config.bar.workspaces.capitalisation.toLowerCase() === "upper") {
+                    displayName = displayName.toUpperCase();
+                } else if (Config.bar.workspaces.capitalisation.toLowerCase() === "lower") {
+                    displayName = displayName.toLowerCase();
+                }
+                const label = Config.bar.workspaces.label || displayName;
+                const occupiedLabel = Config.bar.workspaces.occupiedLabel || label;
+                const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
+                return root.activeWsId === root.ws ? activeLabel : root.isOccupied ? occupiedLabel : label;
+            } else if (style === "numbers") {
+                return root.ws.toString();
+            } else if (style === "roman") {
+                const num = root.ws;
+                const lookup = {X:10,IX:9,V:5,IV:4,I:1};
+                let roman = "";
+                let n = num;
+                for (let i in lookup) {
+                    while (n >= lookup[i]) {
+                        roman += i;
+                        n -= lookup[i];
+                    }
+                }
+                return roman || num.toString();
+            } else if (style === "kanji") {
+                const num = root.ws;
+                const kanjiDigits = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+                if (num <= 10) return kanjiDigits[num];
+                if (num < 20) return "十" + (num % 10 > 0 ? kanjiDigits[num % 10] : "");
+                if (num < 100) return kanjiDigits[Math.floor(num / 10)] + "十" + (num % 10 > 0 ? kanjiDigits[num % 10] : "");
+                return num.toString();
             }
-            const label = Config.bar.workspaces.label || displayName;
-            const occupiedLabel = Config.bar.workspaces.occupiedLabel || label;
-            const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
-            return root.activeWsId === root.ws ? activeLabel : root.isOccupied ? occupiedLabel : label;
+            return root.ws.toString();
         }
         color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
         verticalAlignment: Qt.AlignVCenter

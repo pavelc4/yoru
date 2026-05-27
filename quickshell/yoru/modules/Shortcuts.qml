@@ -163,6 +163,28 @@ Scope {
         target: "toaster"
     }
 
+    IpcHandler {
+        function openMode(mode: string): void {
+            const activeLauncher = Visibilities.launchers.get(Hypr.focusedMonitor);
+            if (activeLauncher) {
+                activeLauncher.openMode(mode);
+            } else {
+                console.warn("No launcher registered for focused monitor:", Hypr.focusedMonitor);
+            }
+        }
+
+        function searchFor(text: string): void {
+            const activeLauncher = Visibilities.launchers.get(Hypr.focusedMonitor);
+            if (activeLauncher) {
+                activeLauncher.searchFor(text);
+            } else {
+                console.warn("No launcher registered for focused monitor:", Hypr.focusedMonitor);
+            }
+        }
+
+        target: "launcher"
+    }
+
     LoggingCategory {
         id: lc
 

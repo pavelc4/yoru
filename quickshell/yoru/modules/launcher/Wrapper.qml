@@ -6,6 +6,7 @@ import Quickshell.Io
 import Yoru.Config
 import qs.components
 import qs.modules.launcher.services
+import qs.services
 
 Item {
     id: root
@@ -25,13 +26,16 @@ Item {
 
     property string pendingSearch: ""
     property string pendingModeOverride: ""
+    property string activeMode: ""
     property real offsetScale: shouldBeActive ? 0 : 1
 
     onShouldBeActiveChanged: {
-        if (shouldBeActive)
+        if (shouldBeActive) {
             implicitHeight = Qt.binding(() => content.implicitHeight);
-        else
+        } else {
             implicitHeight = implicitHeight; // Break binding during close anim
+            root.activeMode = "";
+        }
     }
 
     visible: offsetScale < 1
@@ -40,7 +44,10 @@ Item {
     implicitWidth: content.implicitWidth || 630 // Hard coded fallback for first open
     opacity: 1 - offsetScale
 
-    Component.onCompleted: Qt.callLater(() => Apps) // Load apps on init
+    Component.onCompleted: {
+        Qt.callLater(() => Apps); // Load apps on init
+        Visibilities.launchers.set(Hypr.monitorFor(root.screen), root);
+    }
 
     Behavior on offsetScale {
         Anim {
@@ -60,6 +67,7 @@ Item {
             visibilities: root.visibilities
             panels: root.panels
             maxHeight: root.maxHeight
+            list.modeOverride: root.activeMode
         }
 
         onLoaded: {
@@ -76,27 +84,25 @@ Item {
         }
     }
 
-    IpcHandler {
-        function openMode(mode: string): void {
-            root.visibilities.launcher = true;
-            if (content.item) {
-                content.item.list.modeOverride = mode;
-                content.item.searchField.text = "";
-                content.item.searchField.forceActiveFocus();
-            } else {
-                root.pendingModeOverride = mode;
-            }
+    function openMode(mode: string): void {
+        root.activeMode = mode;
+        root.visibilities.launcher = true;
+        if (content.item) {
+            content.item.list.modeOverride = mode;
+            content.item.searchField.text = "";
+            content.item.searchField.forceActiveFocus();
+        } else {
+            root.pendingModeOverride = mode;
         }
+    }
 
-        function searchFor(text: string): void {
-            root.visibilities.launcher = true;
-            if (content.item) {
-                content.item.searchField.text = text;
-                content.item.searchField.forceActiveFocus();
-            } else {
-                root.pendingSearch = text;
-            }
+    function searchFor(text: string): void {
+        root.visibilities.launcher = true;
+        if (content.item) {
+            content.item.searchField.text = text;
+            content.item.searchField.forceActiveFocus();
+        } else {
+            root.pendingSearch = text;
         }
-        target: "launcher"
     }
 }

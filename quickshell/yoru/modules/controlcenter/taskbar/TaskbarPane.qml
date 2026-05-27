@@ -43,6 +43,7 @@ Item {
     property bool workspacesOccupiedBg: Config.bar.workspaces.occupiedBg ?? false
     property bool workspacesShowWindows: Config.bar.workspaces.showWindows ?? false
     property int workspacesMaxWindowIcons: Config.bar.workspaces.maxWindowIcons ?? 0
+    property string workspacesLabelStyle: Config.bar.workspaces.labelStyle ?? "dots"
     property bool workspacesPerMonitor: GlobalConfig.bar.workspaces.perMonitorWorkspaces ?? true
     property bool scrollWorkspaces: Config.bar.scrollActions.workspaces ?? true
     property bool scrollVolume: Config.bar.scrollActions.volume ?? true
@@ -78,6 +79,7 @@ Item {
         GlobalConfig.bar.workspaces.occupiedBg = root.workspacesOccupiedBg;
         GlobalConfig.bar.workspaces.showWindows = root.workspacesShowWindows;
         GlobalConfig.bar.workspaces.maxWindowIcons = root.workspacesMaxWindowIcons;
+        GlobalConfig.bar.workspaces.labelStyle = root.workspacesLabelStyle;
         GlobalConfig.bar.workspaces.perMonitorWorkspaces = root.workspacesPerMonitor;
         GlobalConfig.bar.scrollActions.workspaces = root.scrollWorkspaces;
         GlobalConfig.bar.scrollActions.volume = root.scrollVolume;
@@ -351,6 +353,65 @@ Item {
                                         checked: root.workspacesActiveIndicator
                                         onToggled: {
                                             root.workspacesActiveIndicator = checked;
+                                            root.saveConfig();
+                                        }
+                                    }
+                                }
+                            }
+
+                            StyledRect {
+                                Layout.fillWidth: true
+                                implicitHeight: workspacesLabelStyleRow.implicitHeight + Tokens.padding.large * 2
+                                radius: Tokens.rounding.normal
+                                color: Colours.layer(Colours.palette.m3surfaceContainer, 2)
+                                z: 99
+
+                                RowLayout {
+                                    id: workspacesLabelStyleRow
+
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.margins: Tokens.padding.large
+                                    spacing: Tokens.spacing.normal
+
+                                    SplitButtonRow {
+                                        Layout.fillWidth: true
+                                        label: qsTr("Label style")
+                                        expandedZ: 99
+
+                                        menuItems: [
+                                            MenuItem {
+                                                property string val: "dots"
+                                                text: qsTr("Dots")
+                                                icon: "fiber_manual_record"
+                                            },
+                                            MenuItem {
+                                                property string val: "numbers"
+                                                text: qsTr("Numbers")
+                                                icon: "pin"
+                                            },
+                                            MenuItem {
+                                                property string val: "roman"
+                                                text: qsTr("Roman numerals")
+                                                icon: "looks_one"
+                                            },
+                                            MenuItem {
+                                                property string val: "kanji"
+                                                text: qsTr("Kanji (Japanese)")
+                                                icon: "translate"
+                                            }
+                                        ]
+
+                                        Component.onCompleted: {
+                                            for (let i = 0; i < menuItems.length; i++) {
+                                                if (menuItems[i].val === root.workspacesLabelStyle)
+                                                    active = menuItems[i];
+                                            }
+                                        }
+
+                                        onSelected: item => {
+                                            root.workspacesLabelStyle = item.val;
                                             root.saveConfig();
                                         }
                                     }

@@ -95,6 +95,7 @@ StyledRect {
     }
 
     component EAnim: Anim {
-        type: Anim.Emphasized
+        type: Anim.Standard
+        duration: 200
     }
 }
