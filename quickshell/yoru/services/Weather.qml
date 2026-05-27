@@ -37,10 +37,10 @@ Singleton {
                 fetchCoordsFromCity(configLocation);
             }
         } else if (!loc || timer.elapsed() > 900) {
-            Requests.get("https://ipinfo.io/json", text => {
+            Requests.get("http://ip-api.com/json/", text => {
                 const response = JSON.parse(text);
-                if (response.loc) {
-                    loc = response.loc;
+                if (response.status === "success") {
+                    loc = response.lat + "," + response.lon;
                     city = response.city ?? "";
                     timer.restart();
                 }
