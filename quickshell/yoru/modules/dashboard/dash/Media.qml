@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Shapes
 import Quickshell
 import Yoru.Config
@@ -6,6 +7,8 @@ import Yoru.Services
 import qs.components
 import qs.services
 import qs.utils
+import "../../clock/shapes" as Shapes
+import "../../clock/shapes/material-shapes.js" as MaterialShapes
 
 Item {
     id: root
@@ -81,7 +84,7 @@ Item {
         }
     }
 
-    StyledClippingRect {
+    Item {
         id: cover
 
         anchors.top: parent.top
@@ -90,8 +93,14 @@ Item {
         anchors.margins: Tokens.padding.large + Tokens.sizes.dashboard.mediaProgressThickness + Tokens.spacing.small
 
         implicitHeight: width
-        color: Colours.tPalette.m3surfaceContainerHigh
-        radius: Infinity
+
+        // Ghost-ish background fill
+        Shapes.ShapeCanvas {
+            id: coverBg
+            anchors.fill: parent
+            color: Colours.tPalette.m3surfaceContainerHigh
+            roundedPolygon: MaterialShapes.getGhostish()
+        }
 
         MaterialIcon {
             anchors.centerIn: parent
@@ -102,8 +111,10 @@ Item {
             font.pointSize: (parent.width * 0.4) || 1
         }
 
+        // Album art source (hidden)
         Image {
             id: image
+            visible: false
 
             anchors.fill: parent
 
@@ -114,6 +125,24 @@ Item {
                 const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
                 return Qt.size(width * dpr, height * dpr);
             }
+        }
+
+        // Ghost-ish mask
+        Shapes.ShapeCanvas {
+            id: coverMask
+            anchors.fill: parent
+            color: "white"
+            visible: false
+            roundedPolygon: MaterialShapes.getGhostish()
+        }
+
+        // Masked album art
+        MultiEffect {
+            source: image
+            anchors.fill: parent
+            visible: image.status === Image.Ready
+            maskEnabled: true
+            maskSource: coverMask
         }
     }
 

@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Yoru.Config
 import qs.components
 import qs.components.effects
@@ -6,6 +7,8 @@ import qs.components.filedialog
 import qs.components.images
 import qs.services
 import qs.utils
+import "../../clock/shapes" as Shapes
+import "../../clock/shapes/material-shapes.js" as MaterialShapes
 
 Row {
     id: root
@@ -16,16 +19,22 @@ Row {
     padding: Tokens.padding.large
     spacing: Tokens.spacing.normal
 
-    StyledClippingRect {
+    Item {
+        id: pfpContainer
         implicitWidth: info.implicitHeight
         implicitHeight: info.implicitHeight
 
-        radius: Tokens.rounding.large
-        color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 2)
+        // Background fill with pixel circle shape
+        Shapes.ShapeCanvas {
+            id: pfpBg
+            anchors.fill: parent
+            color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 2)
+            roundedPolygon: MaterialShapes.getPixelCircle()
+        }
 
+        // Fallback icon
         MaterialIcon {
             anchors.centerIn: parent
-
             text: "person"
             fill: 1
             grade: 200
@@ -33,28 +42,62 @@ Row {
             visible: pfp.status !== Image.Ready
         }
 
+        // Profile image source (hidden, used as source for masked version)
         CachingImage {
             id: pfp
-
+            visible: false
             anchors.fill: parent
             path: `${Paths.home}/.face`
+        }
+
+        // Pixel circle mask for the image
+        Shapes.ShapeCanvas {
+            id: pfpMask
+            anchors.fill: parent
+            color: "white"
+            visible: false
+            roundedPolygon: MaterialShapes.getPixelCircle()
+        }
+
+        // Masked profile image
+        MultiEffect {
+            source: pfp
+            anchors.fill: parent
+            visible: pfp.status === Image.Ready
+            maskEnabled: true
+            maskSource: pfpMask
         }
 
         MouseArea {
             anchors.fill: parent
             hoverEnabled: true
 
-            StyledRect {
+            // Hover scrim overlay (also pixel-circle shaped)
+            MultiEffect {
+                source: scrimRect
                 anchors.fill: parent
-
-                color: Qt.alpha(Colours.palette.m3scrim, 0.5)
+                maskEnabled: true
+                maskSource: pfpMask2
                 opacity: parent.containsMouse ? 1 : 0
 
                 Behavior on opacity {
-                    Anim {
-                        duration: Tokens.anim.durations.expressiveFastSpatial
-                    }
+                    Anim { duration: Tokens.anim.durations.expressiveFastSpatial }
                 }
+            }
+
+            Rectangle {
+                id: scrimRect
+                visible: false
+                anchors.fill: parent
+                color: Qt.alpha(Colours.palette.m3scrim, 0.5)
+            }
+
+            Shapes.ShapeCanvas {
+                id: pfpMask2
+                anchors.fill: parent
+                color: "white"
+                visible: false
+                roundedPolygon: MaterialShapes.getPixelCircle()
             }
 
             StyledRect {
@@ -88,15 +131,11 @@ Row {
                 }
 
                 Behavior on scale {
-                    Anim {
-                        type: Anim.FastSpatial
-                    }
+                    Anim { type: Anim.FastSpatial }
                 }
 
                 Behavior on opacity {
-                    Anim {
-                        duration: Tokens.anim.durations.expressiveFastSpatial
-                    }
+                    Anim { duration: Tokens.anim.durations.expressiveFastSpatial }
                 }
             }
         }
