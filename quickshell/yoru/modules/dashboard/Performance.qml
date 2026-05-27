@@ -135,6 +135,16 @@ Item {
                         mainLabel: qsTr("Usage")
                         secondaryValue: root.displayTemp(SystemUsage.cpuTemp)
                         secondaryLabel: qsTr("Temp")
+                        badge: {
+                            const parts = [];
+                            if (SystemUsage.cpuGovernor)
+                                parts.push(SystemUsage.cpuGovernor);
+                            if (SystemUsage.cpuFreqMhz > 0)
+                                parts.push(`${(SystemUsage.cpuFreqMhz / 1000).toFixed(1)} GHz`);
+                            if (SystemUsage.cpuCores > 0)
+                                parts.push(`${SystemUsage.cpuCores}T`);
+                            return parts.join("  ·  ");
+                        }
                         usage: SystemUsage.cpuPerc
                         temperature: SystemUsage.cpuTemp
                         accentColor: Colours.palette.m3primary
@@ -151,6 +161,14 @@ Item {
                         mainLabel: qsTr("Usage")
                         secondaryValue: root.displayTemp(SystemUsage.gpuTemp)
                         secondaryLabel: qsTr("Temp")
+                        badge: {
+                            const parts = [];
+                            if (SystemUsage.gpuVramTotal > 0)
+                                parts.push(`VRAM ${SystemUsage.gpuVramUsed} / ${SystemUsage.gpuVramTotal} MiB`);
+                            if (SystemUsage.gpuPowerW > 0)
+                                parts.push(`${SystemUsage.gpuPowerW.toFixed(1)} W`);
+                            return parts.join("  ·  ");
+                        }
                         usage: SystemUsage.gpuPerc
                         temperature: SystemUsage.gpuTemp
                         accentColor: Colours.palette.m3secondary
@@ -382,6 +400,7 @@ Item {
         property string mainLabel
         property string secondaryValue
         property string secondaryLabel
+        property string badge: ""
         property real usage: 0
         property real temperature: 0
         property color accentColor: Colours.palette.m3primary
@@ -451,6 +470,23 @@ Item {
                 value: heroCard.tempProgress
                 fgColor: heroCard.accentColor
                 bgColor: Qt.alpha(heroCard.accentColor, 0.2)
+            }
+
+            // Governor / freq badge
+            StyledRect {
+                visible: heroCard.badge !== ""
+                radius: Tokens.rounding.full
+                implicitWidth: badgeText.implicitWidth + Tokens.padding.normal
+                implicitHeight: badgeText.implicitHeight + 2
+                color: Qt.alpha(heroCard.accentColor, 0.12)
+
+                StyledText {
+                    id: badgeText
+                    anchors.centerIn: parent
+                    text: heroCard.badge
+                    font.pointSize: Tokens.font.size.smaller
+                    color: Colours.palette.m3onSurfaceVariant
+                }
             }
         }
 

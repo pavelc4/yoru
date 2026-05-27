@@ -12,6 +12,10 @@ Singleton {
     property string cpuName: ""
     property real cpuPerc
     property real cpuTemp
+    property string cpuGovernor: ""
+    property real cpuFreqMhz: 0
+    property real cpuMaxFreqMhz: 0
+    property int cpuCores: 0
 
     // GPU properties
     readonly property string gpuType: GlobalConfig.services.gpuType.toUpperCase() || autoGpuType
@@ -19,6 +23,9 @@ Singleton {
     property string gpuName: ""
     property real gpuPerc
     property real gpuTemp
+    property real gpuVramUsed: 0   // MiB
+    property real gpuVramTotal: 0  // MiB
+    property real gpuPowerW: 0     // Watts
 
     // Memory properties
     property real memUsed
@@ -89,18 +96,46 @@ Singleton {
             storage.running = true;
             gpuUsage.running = true;
             sensors.running = true;
+            cpuGovernorFile.reload();
+            cpuFreqFile.reload();
         }
     }
 
-    // One-time CPU info detection (name)
+    // One-time CPU info detection (name + core count)
     FileView {
         id: cpuinfoInit
 
         path: "/proc/cpuinfo"
         onLoaded: {
-            const nameMatch = text().match(/model name\s*:\s*(.+)/);
+            const t = text();
+            const nameMatch = t.match(/model name\s*:\s*(.+)/);
             if (nameMatch)
                 root.cpuName = root.cleanCpuName(nameMatch[1]);
+            const cores = (t.match(/^processor/gm) || []).length;
+            if (cores > 0)
+                root.cpuCores = cores;
+            const maxFreqMatch = t.match(/cpu MHz\s*:\s*([0-9.]+)/);
+        }
+    }
+
+    // Poll CPU governor (fast sysfs read)
+    FileView {
+        id: cpuGovernorFile
+        path: "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+        onLoaded: root.cpuGovernor = text().trim()
+    }
+
+    // Poll current CPU freq (average of all cores via /proc/cpuinfo)
+    FileView {
+        id: cpuFreqFile
+        path: "/proc/cpuinfo"
+        onLoaded: {
+            const lines = text().split("\n");
+            const freqs = lines
+                .filter(l => l.startsWith("cpu MHz"))
+                .map(l => parseFloat(l.split(":")[1]) || 0);
+            if (freqs.length > 0)
+                root.cpuFreqMhz = freqs.reduce((a, b) => a + b, 0) / freqs.length;
         }
     }
 
@@ -267,7 +302,7 @@ Singleton {
     Process {
         id: gpuUsage
 
-        command: root.gpuType === "GENERIC" ? ["sh", "-c", "cat /sys/class/drm/card*/device/gpu_busy_percent"] : root.gpuType === "NVIDIA" ? ["nvidia-smi", "--query-gpu=utilization.gpu,temperature.gpu", "--format=csv,noheader,nounits"] : ["echo"]
+        command: root.gpuType === "GENERIC" ? ["sh", "-c", "cat /sys/class/drm/card*/device/gpu_busy_percent"] : root.gpuType === "NVIDIA" ? ["nvidia-smi", "--query-gpu=utilization.gpu,temperature.gpu,memory.used,memory.total,power.draw", "--format=csv,noheader,nounits"] : ["echo"]
         stdout: StdioCollector {
             onStreamFinished: {
                 if (root.gpuType === "GENERIC") {
@@ -275,12 +310,18 @@ Singleton {
                     const sum = percs.reduce((acc, d) => acc + parseInt(d, 10), 0);
                     root.gpuPerc = sum / percs.length / 100;
                 } else if (root.gpuType === "NVIDIA") {
-                    const [usage, temp] = text.trim().split(",");
-                    root.gpuPerc = parseInt(usage, 10) / 100;
-                    root.gpuTemp = parseInt(temp, 10);
+                    const parts = text.trim().split(",").map(s => s.trim());
+                    root.gpuPerc = parseInt(parts[0], 10) / 100;
+                    root.gpuTemp = parseInt(parts[1], 10);
+                    root.gpuVramUsed = parseFloat(parts[2]) || 0;
+                    root.gpuVramTotal = parseFloat(parts[3]) || 0;
+                    root.gpuPowerW = parseFloat(parts[4]) || 0;
                 } else {
                     root.gpuPerc = 0;
                     root.gpuTemp = 0;
+                    root.gpuVramUsed = 0;
+                    root.gpuVramTotal = 0;
+                    root.gpuPowerW = 0;
                 }
             }
         }
