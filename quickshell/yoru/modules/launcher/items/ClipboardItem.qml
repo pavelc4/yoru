@@ -18,7 +18,11 @@ Item {
     anchors.left: parent?.left
     anchors.right: parent?.right
 
-    function doClick() { btn.clicked() }
+    function doClick() {
+        if (!root.modelData) return;
+        Quickshell.execDetached(["sh", "-c", `echo '${root.modelData.raw.replace(/'/g, "'\\''")}' | cliphist decode | wl-copy`]);
+        list.visibilities.launcher = false;
+    }
 
     Component.onCompleted: {
         if (isImage && root.modelData) {
@@ -35,11 +39,7 @@ Item {
     StateLayer {
         id: btn
         radius: Tokens.rounding.normal
-        onClicked: {
-            if (!root.modelData) return;
-            Quickshell.execDetached(["sh", "-c", `echo '${root.modelData.raw.replace(/'/g, "'\\''")}' | cliphist decode | wl-copy`]);
-            list.visibilities.launcher = false;
-        }
+        onClicked: root.doClick()
     }
 
     Item {

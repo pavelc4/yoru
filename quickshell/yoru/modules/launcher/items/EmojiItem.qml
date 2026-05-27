@@ -15,16 +15,16 @@ Item {
     anchors.left: parent?.left
     anchors.right: parent?.right
 
-    function doClick() { btn.clicked() }
+    function doClick() {
+        if (!root.modelData) return;
+        Quickshell.execDetached(["wl-copy", root.modelData.emoji]);
+        list.visibilities.launcher = false;
+    }
 
     StateLayer {
         id: btn
         radius: Tokens.rounding.normal
-        onClicked: {
-            if (!root.modelData) return;
-            Quickshell.execDetached(["wl-copy", root.modelData.emoji]);
-            list.visibilities.launcher = false;
-        }
+        onClicked: root.doClick()
     }
 
     Item {
