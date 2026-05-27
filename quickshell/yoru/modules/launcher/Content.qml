@@ -96,7 +96,7 @@ Item {
                             currentItem.onClicked();
                         else
                             currentItem.modelData.onClicked(list.currentList);
-                    } else if (text.startsWith("c ") || text.startsWith("e ")) {
+                    } else if (text.startsWith("c ") || text.startsWith("e ") || (list.currentList && (list.currentList.state === "clipboard" || list.currentList.state === "emoji"))) {
                         currentItem.doClick();
                     } else {
                         Apps.launch(currentItem.modelData);
