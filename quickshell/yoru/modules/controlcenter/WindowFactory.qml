@@ -35,10 +35,8 @@ Singleton {
             implicitWidth: cc.implicitWidth
             implicitHeight: cc.implicitHeight
 
-            minimumSize.width: implicitWidth
-            minimumSize.height: implicitHeight
-            maximumSize.width: implicitWidth
-            maximumSize.height: implicitHeight
+            minimumSize.width: 700
+            minimumSize.height: 500
 
             title: qsTr("Yoru Settings - %1").arg(cc.active.slice(0, 1).toUpperCase() + cc.active.slice(1))
 

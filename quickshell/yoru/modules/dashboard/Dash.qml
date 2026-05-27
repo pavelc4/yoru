@@ -4,6 +4,7 @@ import Yoru.Config
 import qs.components
 import qs.components.filedialog
 import qs.services
+import qs.modules.sidebar as Sidebar
 
 GridLayout {
     id: root
@@ -87,13 +88,14 @@ GridLayout {
         Layout.row: 0
         Layout.column: 5
         Layout.rowSpan: 2
-        Layout.preferredWidth: media.implicitWidth
+        Layout.preferredWidth: Tokens.sizes.dashboard.mediaWidth
         Layout.fillHeight: true
 
         radius: Tokens.rounding.large * 2
 
-        Media {
-            id: media
+        Sidebar.NotifDock {
+            props: Sidebar.Props {}
+            visibilities: root.visibilities
         }
     }
 
