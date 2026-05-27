@@ -9,7 +9,8 @@ Searcher {
     id: root
 
     function transformSearch(search: string): string {
-        return search.slice(2);
+        if (search.startsWith("c ")) return search.slice(2);
+        return search;
     }
 
     list: variants.instances

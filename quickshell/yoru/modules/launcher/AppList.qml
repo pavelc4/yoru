@@ -47,7 +47,11 @@ StyledListView {
         }
     }
 
+    property string modeOverride: ""
+
     state: {
+        if (modeOverride !== "") return modeOverride;
+
         const text = search.text;
         const prefix = GlobalConfig.launcher.actionPrefix;
         if (text.startsWith("c ")) return "clipboard";

@@ -24,6 +24,7 @@ Item {
     }
 
     property string pendingSearch: ""
+    property string pendingModeOverride: ""
     property real offsetScale: shouldBeActive ? 0 : 1
 
     onShouldBeActiveChanged: {
@@ -62,7 +63,12 @@ Item {
         }
 
         onLoaded: {
-            if (root.pendingSearch !== "") {
+            if (root.pendingModeOverride !== "") {
+                item.list.modeOverride = root.pendingModeOverride;
+                item.searchField.text = "";
+                item.searchField.forceActiveFocus();
+                root.pendingModeOverride = "";
+            } else if (root.pendingSearch !== "") {
                 item.searchField.text = root.pendingSearch;
                 item.searchField.forceActiveFocus();
                 root.pendingSearch = "";
@@ -71,6 +77,17 @@ Item {
     }
 
     IpcHandler {
+        function openMode(mode: string): void {
+            root.visibilities.launcher = true;
+            if (content.item) {
+                content.item.list.modeOverride = mode;
+                content.item.searchField.text = "";
+                content.item.searchField.forceActiveFocus();
+            } else {
+                root.pendingModeOverride = mode;
+            }
+        }
+
         function searchFor(text: string): void {
             root.visibilities.launcher = true;
             if (content.item) {

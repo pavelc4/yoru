@@ -18,6 +18,8 @@ Item {
     required property int padding
     required property int rounding
 
+    property string modeOverride: ""
+
     readonly property bool showWallpapers: search.text.startsWith(`${GlobalConfig.launcher.actionPrefix}wallpaper `)
     readonly property var currentList: showWallpapers ? wallpaperList.item : appList.item // Can be either ListView or PathView, so can't type properly
 
@@ -83,6 +85,7 @@ Item {
         sourceComponent: AppList {
             search: root.search
             visibilities: root.visibilities
+            modeOverride: root.modeOverride
         }
     }
 

@@ -15,6 +15,7 @@ Item {
     required property real maxHeight
 
     property alias searchField: search
+    property alias list: list
 
     readonly property int padding: Tokens.padding.large
     readonly property int rounding: Tokens.rounding.large
@@ -134,8 +135,10 @@ Item {
 
             Connections {
                 function onLauncherChanged(): void {
-                    if (!root.visibilities.launcher)
+                    if (!root.visibilities.launcher) {
                         search.text = "";
+                        list.modeOverride = "";
+                    }
                 }
 
                 function onSessionChanged(): void {

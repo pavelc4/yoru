@@ -56,9 +56,9 @@ hl.bind("CTRL + SUPER + P", hl.dsp.global("quickshell:panelFamilyCycle"), { desc
 
 --##! Utilities
 --# Screenshot, Record, OCR, Color picker, Clipboard history
-hl.bind("SUPER + V", hl.dsp.exec_cmd(qsIpcCall .. " launcher searchFor \"c \""),
+hl.bind("SUPER + V", hl.dsp.exec_cmd(qsIpcCall .. " launcher openMode \"clipboard\""),
     { description = "Utilities: Clipboard history >> clipboard" })
-hl.bind("SUPER + Period", hl.dsp.exec_cmd(qsIpcCall .. " launcher searchFor \"e \""),
+hl.bind("SUPER + Period", hl.dsp.exec_cmd(qsIpcCall .. " launcher openMode \"emoji\""),
     { description = "Utilities: Emoji >> clipboard" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.global("quickshell:regionScreenshot"), { description = "Utilities: Screen snip" })
 hl.bind("SUPER + SHIFT + S",
