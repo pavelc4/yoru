@@ -75,41 +75,86 @@ Item {
             Layout.fillWidth: true
             spacing: Tokens.spacing.normal
 
-            RowLayout {
+            ColumnLayout {
                 Layout.fillWidth: true
-                spacing: Tokens.spacing.normal
-                visible: Config.dashboard.performance.showCpu || (Config.dashboard.performance.showGpu && SystemUsage.gpuType !== "NONE")
+                spacing: Tokens.spacing.smaller
 
-                HeroCard {
+                // °C / °F toggle pill
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.minimumWidth: 400
-                    Layout.preferredHeight: 150
-                    visible: Config.dashboard.performance.showCpu
-                    icon: "memory"
-                    title: SystemUsage.cpuName ? `CPU - ${SystemUsage.cpuName}` : qsTr("CPU")
-                    mainValue: `${Math.round(SystemUsage.cpuPerc * 100)}%`
-                    mainLabel: qsTr("Usage")
-                    secondaryValue: root.displayTemp(SystemUsage.cpuTemp)
-                    secondaryLabel: qsTr("Temp")
-                    usage: SystemUsage.cpuPerc
-                    temperature: SystemUsage.cpuTemp
-                    accentColor: Colours.palette.m3primary
+                    Item { Layout.fillWidth: true }
+                    StyledRect {
+                        radius: Tokens.rounding.full
+                        implicitWidth: perfUnitRow.implicitWidth + Tokens.padding.normal * 1.5
+                        implicitHeight: perfUnitRow.implicitHeight + Tokens.spacing.small
+                        color: Colours.tPalette.m3surfaceContainerHigh
+
+                        Row {
+                            id: perfUnitRow
+                            anchors.centerIn: parent
+                            spacing: 4
+
+                            StyledText {
+                                text: "°C"
+                                font.pointSize: Tokens.font.size.smaller
+                                font.weight: !GlobalConfig.services.useFahrenheitPerformance ? Font.Bold : Font.Normal
+                                color: !GlobalConfig.services.useFahrenheitPerformance ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                            }
+                            StyledText {
+                                text: "|"
+                                font.pointSize: Tokens.font.size.smaller
+                                color: Colours.palette.m3onSurfaceVariant
+                                opacity: 0.4
+                            }
+                            StyledText {
+                                text: "°F"
+                                font.pointSize: Tokens.font.size.smaller
+                                font.weight: GlobalConfig.services.useFahrenheitPerformance ? Font.Bold : Font.Normal
+                                color: GlobalConfig.services.useFahrenheitPerformance ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                            }
+                        }
+
+                        TapHandler {
+                            onTapped: GlobalConfig.services.useFahrenheitPerformance = !GlobalConfig.services.useFahrenheitPerformance
+                        }
+                    }
                 }
 
-                HeroCard {
+                RowLayout {
                     Layout.fillWidth: true
-                    Layout.minimumWidth: 400
-                    Layout.preferredHeight: 150
-                    visible: Config.dashboard.performance.showGpu && SystemUsage.gpuType !== "NONE"
-                    icon: "desktop_windows"
-                    title: SystemUsage.gpuName ? `GPU - ${SystemUsage.gpuName}` : qsTr("GPU")
-                    mainValue: `${Math.round(SystemUsage.gpuPerc * 100)}%`
-                    mainLabel: qsTr("Usage")
-                    secondaryValue: root.displayTemp(SystemUsage.gpuTemp)
-                    secondaryLabel: qsTr("Temp")
-                    usage: SystemUsage.gpuPerc
-                    temperature: SystemUsage.gpuTemp
-                    accentColor: Colours.palette.m3secondary
+                    spacing: Tokens.spacing.normal
+
+                    HeroCard {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 400
+                        Layout.preferredHeight: 150
+                        visible: Config.dashboard.performance.showCpu
+                        icon: "memory"
+                        title: SystemUsage.cpuName ? `CPU - ${SystemUsage.cpuName}` : qsTr("CPU")
+                        mainValue: `${Math.round(SystemUsage.cpuPerc * 100)}%`
+                        mainLabel: qsTr("Usage")
+                        secondaryValue: root.displayTemp(SystemUsage.cpuTemp)
+                        secondaryLabel: qsTr("Temp")
+                        usage: SystemUsage.cpuPerc
+                        temperature: SystemUsage.cpuTemp
+                        accentColor: Colours.palette.m3primary
+                    }
+
+                    HeroCard {
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: 400
+                        Layout.preferredHeight: 150
+                        visible: Config.dashboard.performance.showGpu && SystemUsage.gpuType !== "NONE"
+                        icon: "desktop_windows"
+                        title: SystemUsage.gpuName ? `GPU - ${SystemUsage.gpuName}` : qsTr("GPU")
+                        mainValue: `${Math.round(SystemUsage.gpuPerc * 100)}%`
+                        mainLabel: qsTr("Usage")
+                        secondaryValue: root.displayTemp(SystemUsage.gpuTemp)
+                        secondaryLabel: qsTr("Temp")
+                        usage: SystemUsage.gpuPerc
+                        temperature: SystemUsage.gpuTemp
+                        accentColor: Colours.palette.m3secondary
+                    }
                 }
             }
 

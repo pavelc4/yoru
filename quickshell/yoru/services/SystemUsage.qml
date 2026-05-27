@@ -254,7 +254,13 @@ Singleton {
         running: !GlobalConfig.services.gpuType
         command: ["sh", "-c", "if command -v nvidia-smi &>/dev/null && nvidia-smi -L &>/dev/null; then echo NVIDIA; elif ls /sys/class/drm/card*/device/gpu_busy_percent 2>/dev/null | grep -q .; then echo GENERIC; else echo NONE; fi"]
         stdout: StdioCollector {
-            onStreamFinished: root.autoGpuType = text.trim()
+            onStreamFinished: {
+                root.autoGpuType = text.trim();
+                // Trigger GPU usage poll now that we know the GPU type
+                if (root.gpuType !== "NONE") {
+                    gpuUsage.running = true;
+                }
+            }
         }
     }
 

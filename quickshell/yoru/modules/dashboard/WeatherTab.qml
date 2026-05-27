@@ -45,6 +45,43 @@ Item {
                 Layout.fillWidth: true
             }
 
+            // Toggle °C/°F
+            StyledRect {
+                radius: Tokens.rounding.full
+                implicitWidth: unitRow.implicitWidth + Tokens.padding.normal * 1.5
+                implicitHeight: unitRow.implicitHeight + Tokens.spacing.small
+                color: Colours.tPalette.m3surfaceContainerHigh
+
+                Row {
+                    id: unitRow
+                    anchors.centerIn: parent
+                    spacing: 4
+
+                    StyledText {
+                        text: "°C"
+                        font.pointSize: Tokens.font.size.small
+                        font.weight: !GlobalConfig.services.useFahrenheit ? Font.Bold : Font.Normal
+                        color: !GlobalConfig.services.useFahrenheit ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                    }
+                    StyledText {
+                        text: "|"
+                        font.pointSize: Tokens.font.size.small
+                        color: Colours.palette.m3onSurfaceVariant
+                        opacity: 0.4
+                    }
+                    StyledText {
+                        text: "°F"
+                        font.pointSize: Tokens.font.size.small
+                        font.weight: GlobalConfig.services.useFahrenheit ? Font.Bold : Font.Normal
+                        color: GlobalConfig.services.useFahrenheit ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                    }
+                }
+
+                TapHandler {
+                    onTapped: GlobalConfig.services.useFahrenheit = !GlobalConfig.services.useFahrenheit
+                }
+            }
+
             Row {
                 spacing: Tokens.spacing.large
 
