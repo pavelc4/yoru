@@ -147,8 +147,8 @@ Item {
         visibilities: root.visibilities
 
         anchors.top: notifications.bottom
-        anchors.bottom: utilities.top
-        anchors.bottomMargin: Tokens.spacing.normal
+        anchors.bottom: utilities.visible ? utilities.top : parent.bottom
+        anchors.bottomMargin: utilities.visible ? Tokens.spacing.normal : 40
         anchors.right: parent.right
     }
 }
