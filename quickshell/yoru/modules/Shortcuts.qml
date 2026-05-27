@@ -125,6 +125,13 @@ Scope {
             return Object.keys(visibilities).filter(k => typeof visibilities[k] === "boolean").join("\n");
         }
 
+        function setScreenshotMode(active: bool): void {
+            const vis = Visibilities.getForActive();
+            if (vis) {
+                vis.screenshotMode = active;
+            }
+        }
+
         target: "drawers"
     }
 

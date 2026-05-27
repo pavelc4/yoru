@@ -65,6 +65,7 @@ CustomMouseArea {
 
     onPressed: event => dragStart = Qt.point(event.x, event.y)
     onContainsMouseChanged: {
+        if (visibilities.screenshotMode) return;
         if (!containsMouse) {
             // Only hide if not activated by shortcut
             if (!osdShortcutActive) {

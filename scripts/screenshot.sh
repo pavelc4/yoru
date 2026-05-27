@@ -30,9 +30,12 @@ fi
 case "$MODE" in
     region)
         # Select region and copy to clipboard + optionally save to file
+        qs -c yoru ipc call drawers setScreenshotMode true
         if ! geom=$(slurp 2>/dev/null); then
+            qs -c yoru ipc call drawers setScreenshotMode false
             exit 1
         fi
+        qs -c yoru ipc call drawers setScreenshotMode false
         
         if [[ "$SAVE_FILE" -eq 1 ]]; then
             FILENAME="$SAVE_DIR/Screenshot_$(get_date).png"
@@ -47,9 +50,12 @@ case "$MODE" in
 
     freeze)
         # Freeze screen and select region (standard grimshot/slurp behavior)
+        qs -c yoru ipc call drawers setScreenshotMode true
         if ! geom=$(slurp 2>/dev/null); then
+            qs -c yoru ipc call drawers setScreenshotMode false
             exit 1
         fi
+        qs -c yoru ipc call drawers setScreenshotMode false
         
         grim -g "$geom" - | wl-copy
         notify-send "Screenshot Captured" "Copied region to clipboard" -a "Yoru Screenshot"
@@ -83,9 +89,12 @@ case "$MODE" in
 
     ocr)
         # Select region, run OCR (English) and copy text to clipboard
+        qs -c yoru ipc call drawers setScreenshotMode true
         if ! geom=$(slurp 2>/dev/null); then
+            qs -c yoru ipc call drawers setScreenshotMode false
             exit 1
         fi
+        qs -c yoru ipc call drawers setScreenshotMode false
         
         TEMP_IMG="/tmp/ocr_image.png"
         grim -g "$geom" "$TEMP_IMG"
