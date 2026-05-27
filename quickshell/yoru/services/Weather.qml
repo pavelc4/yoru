@@ -219,7 +219,7 @@ Singleton {
     }
 
     Timer {
-        interval: 3600000 // 1 hour
+        interval: 600000 // 10 minutes
         running: true
         repeat: true
         onTriggered: fetchWeatherData()
