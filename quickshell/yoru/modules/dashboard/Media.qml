@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
@@ -11,6 +12,8 @@ import qs.components
 import qs.components.controls
 import qs.services
 import qs.utils
+import "../clock/shapes" as Shapes
+import "../clock/shapes/material-shapes.js" as MaterialShapes
 
 Item {
     id: root
@@ -154,7 +157,7 @@ Item {
         }
     }
 
-    StyledClippingRect {
+    Item {
         id: cover
 
         anchors.verticalCenter: parent.verticalCenter
@@ -164,8 +167,13 @@ Item {
         implicitWidth: Tokens.sizes.dashboard.mediaCoverArtSize
         implicitHeight: Tokens.sizes.dashboard.mediaCoverArtSize
 
-        color: Colours.tPalette.m3surfaceContainerHigh
-        radius: Infinity
+        // Cookie 9-sided background
+        Shapes.ShapeCanvas {
+            id: coverBg
+            anchors.fill: parent
+            color: Colours.tPalette.m3surfaceContainerHigh
+            roundedPolygon: MaterialShapes.getCookie9Sided()
+        }
 
         MaterialIcon {
             anchors.centerIn: parent
@@ -176,8 +184,10 @@ Item {
             font.pointSize: (parent.width * 0.4) || 1
         }
 
+        // Album art source (hidden)
         Image {
             id: image
+            visible: false
 
             anchors.fill: parent
 
@@ -191,9 +201,31 @@ Item {
 
             MouseArea {
                 anchors.fill: parent
-                onClicked: {
-                    LyricsService.toggleVisibility();
-                }
+                onClicked: LyricsService.toggleVisibility()
+            }
+        }
+
+        // Cookie 9-sided mask
+        Shapes.ShapeCanvas {
+            id: coverMask
+            anchors.fill: parent
+            color: "white"
+            visible: false
+            roundedPolygon: MaterialShapes.getCookie9Sided()
+        }
+
+        // Masked album art
+        MultiEffect {
+            source: image
+            anchors.fill: parent
+            visible: image.status === Image.Ready
+            maskEnabled: true
+            maskSource: coverMask
+
+            // Click passthrough to the MouseArea inside image
+            MouseArea {
+                anchors.fill: parent
+                onClicked: LyricsService.toggleVisibility()
             }
         }
     }
