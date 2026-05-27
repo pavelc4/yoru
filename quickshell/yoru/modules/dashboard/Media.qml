@@ -14,6 +14,7 @@ import qs.services
 import qs.utils
 import "../clock/shapes" as Shapes
 import "../clock/shapes/material-shapes.js" as MaterialShapes
+import "../clock/shapes/shapes/morph.js" as MorphJS
 
 Item {
     id: root
@@ -31,6 +32,56 @@ Item {
     property real playerProgress: {
         const active = Players.active;
         return active?.length ? (active.position % active.length) / active.length : 0;
+    }
+
+    // Precompute N evenly-spaced points along the Cookie 9-sided outline
+    // Each entry: { x, y } in normalised [0,1] coords, nx/ny = outward unit normal
+    readonly property var coverOutlinePoints: {
+        const n = GlobalConfig.services.visualiserBars;
+        const shape = MaterialShapes.getCookie9Sided();
+        const morph = new MorphJS.Morph(shape, shape);
+        const cubics = morph.asCubics(1.0);
+        if (!cubics || cubics.length === 0) return [];
+
+        // Dense sample along all bezier segments
+        const SAMP = 24;
+        const pts = [];
+        for (const c of cubics) {
+            for (let i = 0; i < SAMP; i++) {
+                const t = i / SAMP, mt = 1 - t;
+                pts.push({
+                    x: mt*mt*mt*c.anchor0X + 3*mt*mt*t*c.control0X + 3*mt*t*t*c.control1X + t*t*t*c.anchor1X,
+                    y: mt*mt*mt*c.anchor0Y + 3*mt*mt*t*c.control0Y + 3*mt*t*t*c.control1Y + t*t*t*c.anchor1Y
+                });
+            }
+        }
+
+        // Arc-length cumulation
+        const cum = [0];
+        for (let i = 1; i < pts.length; i++) {
+            const dx = pts[i].x - pts[i-1].x, dy = pts[i].y - pts[i-1].y;
+            cum.push(cum[i-1] + Math.sqrt(dx*dx + dy*dy));
+        }
+        const total = cum[cum.length - 1];
+
+        // Sample n equidistant points
+        const result = [];
+        for (let k = 0; k < n; k++) {
+            const target = (k / n) * total;
+            let lo = 0, hi = pts.length - 1;
+            while (hi - lo > 1) {
+                const mid = (lo + hi) >> 1;
+                if (cum[mid] <= target) lo = mid; else hi = mid;
+            }
+            const seg = cum[hi] - cum[lo];
+            const frac = seg > 1e-9 ? (target - cum[lo]) / seg : 0;
+            const px = pts[lo].x * (1 - frac) + pts[hi].x * frac;
+            const py = pts[lo].y * (1 - frac) + pts[hi].y * frac;
+            const nx = px - 0.5, ny = py - 0.5;
+            const nl = Math.sqrt(nx*nx + ny*ny) || 1;
+            result.push({ x: px, y: py, nx: nx / nl, ny: ny / nl });
+        }
+        return result;
     }
 
     function lengthStr(length: int): string {
@@ -109,8 +160,9 @@ Item {
 
         readonly property real centerX: width / 2
         readonly property real centerY: height / 2
-        readonly property real innerX: cover.implicitWidth / 2 + Tokens.spacing.small
-        readonly property real innerY: cover.implicitHeight / 2 + Tokens.spacing.small
+        // Expose cover dimensions so Variants ShapePaths can read them
+        readonly property real coverW: cover.implicitWidth
+        readonly property real coverH: cover.implicitHeight
         property color colour: Colours.palette.m3primary
 
         anchors.fill: cover
@@ -133,22 +185,22 @@ Item {
 
             required property int modelData
             readonly property real value: Math.max(1e-3, Math.min(1, Audio.cava.values[modelData]))
-
-            readonly property real angle: modelData * 2 * Math.PI / GlobalConfig.services.visualiserBars
             readonly property real magnitude: value * root.Tokens.sizes.dashboard.mediaVisualiserSize
-            readonly property real cos: Math.cos(angle)
-            readonly property real sin: Math.sin(angle)
+
+            // Shape outline point for this bar
+            readonly property var sp: root.coverOutlinePoints[modelData] ?? { x: 0.5, y: 0.5, nx: 1, ny: 0 }
 
             capStyle: root.Tokens.rounding.scale === 0 ? ShapePath.SquareCap : ShapePath.RoundCap
             strokeWidth: 360 / GlobalConfig.services.visualiserBars - root.Tokens.spacing.small / 4
             strokeColor: Colours.palette.m3primary
 
-            startX: visualiser.centerX + (visualiser.innerX + strokeWidth / 2) * cos
-            startY: visualiser.centerY + (visualiser.innerY + strokeWidth / 2) * sin
+            // Start from shape outline, offset by half-strokeWidth + small gap outward
+            startX: visualiser.centerX + (sp.x - 0.5) * visualiser.coverW + sp.nx * (root.Tokens.spacing.small + strokeWidth / 2)
+            startY: visualiser.centerY + (sp.y - 0.5) * visualiser.coverH + sp.ny * (root.Tokens.spacing.small + strokeWidth / 2)
 
             PathLine {
-                x: visualiser.centerX + (visualiser.innerX + visualiserBar.strokeWidth / 2 + visualiserBar.magnitude) * visualiserBar.cos
-                y: visualiser.centerY + (visualiser.innerY + visualiserBar.strokeWidth / 2 + visualiserBar.magnitude) * visualiserBar.sin
+                x: visualiser.centerX + (visualiserBar.sp.x - 0.5) * visualiser.coverW + visualiserBar.sp.nx * (root.Tokens.spacing.small + visualiserBar.strokeWidth / 2 + visualiserBar.magnitude)
+                y: visualiser.centerY + (visualiserBar.sp.y - 0.5) * visualiser.coverH + visualiserBar.sp.ny * (root.Tokens.spacing.small + visualiserBar.strokeWidth / 2 + visualiserBar.magnitude)
             }
 
             Behavior on strokeColor {
