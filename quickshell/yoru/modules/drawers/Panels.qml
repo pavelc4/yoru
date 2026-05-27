@@ -147,7 +147,7 @@ Item {
         visibilities: root.visibilities
 
         anchors.top: notifications.bottom
-        anchors.bottom: utilities.top
+        anchors.bottom: utilities.visible ? utilities.top : parent.bottom
         anchors.right: parent.right
     }
 }
