@@ -7,10 +7,9 @@ local qsIpcCall = "qs -c yoru ipc call"
 local qsIsAlive = qsIpcCall .. " TEST_ALIVE"
 
 
-hl.bind("SUPER + SUPER_L", hl.dsp.global("quickshell:searchToggleRelease"), { description = "Shell: Toggle search" })
-hl.bind("SUPER + SUPER_R", hl.dsp.global("quickshell:searchToggleRelease"))
-hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd(qsIsAlive .. " || pkill fuzzel || fuzzel"))
-hl.bind("SUPER + SUPER_R", hl.dsp.exec_cmd(qsIsAlive .. " || pkill fuzzel || fuzzel"))
+hl.bind("SUPER + Space", hl.dsp.exec_cmd(qsIpcCall .. " drawers toggle launcher"), { description = "Shell: Toggle launcher" })
+hl.bind("SUPER + SUPER_L", hl.dsp.exec_cmd(qsIpcCall .. " drawers toggle launcher"), { description = "Shell: Toggle search" })
+hl.bind("SUPER + SUPER_R", hl.dsp.exec_cmd(qsIpcCall .. " drawers toggle launcher"))
 
 hl.bind("SUPER_L", hl.dsp.global("quickshell:workspaceNumber"), { ignore_mods = true, transparent = true })
 hl.bind("SUPER_R", hl.dsp.global("quickshell:workspaceNumber"), { ignore_mods = true, transparent = true })
@@ -65,26 +64,26 @@ hl.bind("SUPER + Period", hl.dsp.exec_cmd(
     { description = "Utilities: Emoji >> clipboard" })
 hl.bind("SUPER + SHIFT + S", hl.dsp.global("quickshell:regionScreenshot"), { description = "Utilities: Screen snip" })
 hl.bind("SUPER + SHIFT + S",
-    hl.dsp.exec_cmd(qsIsAlive .. " || pidof slurp || " .. qsScripts .. "/screenshot.sh --mode region"))
+    hl.dsp.exec_cmd("pidof slurp || " .. qsScripts .. "/screenshot.sh --mode region"))
 hl.bind("SUPER + SHIFT + A", hl.dsp.global("quickshell:regionSearch"), { description = "Utilities: Google Lens" })
 hl.bind("SUPER + SHIFT + A",
-    hl.dsp.exec_cmd(qsIsAlive .. " || pidof slurp || " .. qsScripts .. "/screenshot.sh --mode search"))
+    hl.dsp.exec_cmd("pidof slurp || " .. qsScripts .. "/screenshot.sh --mode search"))
 --# OCR
 hl.bind("SUPER + SHIFT + X", hl.dsp.global("quickshell:regionOcr"),
     { description = "Utilities: Character recognition >> clipboard" })
 hl.bind("SUPER + SHIFT + T", hl.dsp.global("quickshell:screenTranslate"),
     { description = "Utilities: Translate screen content" })
 hl.bind("SUPER + SHIFT + X",
-    hl.dsp.exec_cmd(qsIsAlive .. " || pidof slurp || " .. qsScripts .. "/screenshot.sh --mode ocr"))
+    hl.dsp.exec_cmd("pidof slurp || " .. qsScripts .. "/screenshot.sh --mode ocr"))
 --# Color picker
 hl.bind("SUPER + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a"),
     { description = "Utilities: Pick color #RRGGBB >> clipboard" })
 --# Recording stuff
 hl.bind("SUPER + SHIFT + R", hl.dsp.global("quickshell:regionRecord"),
     { locked = true, description = "Utilities: Record region (no sound)" })
-hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(qsIsAlive .. " || " .. qsScripts .. "/record.sh"), { locked = true })
+hl.bind("SUPER + SHIFT + R", hl.dsp.exec_cmd(qsScripts .. "/record.sh"), { locked = true })
 hl.bind("SUPER + ALT + R", hl.dsp.global("quickshell:regionRecord"), { locked = true })
-hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd(qsIsAlive .. " || " .. qsScripts .. "/record.sh"), { locked = true })
+hl.bind("SUPER + ALT + R", hl.dsp.exec_cmd(qsScripts .. "/record.sh"), { locked = true })
 hl.bind("CTRL + ALT + R", hl.dsp.exec_cmd(qsScripts .. "/record.sh --fullscreen"), { locked = true })
 hl.bind("SUPER + SHIFT + ALT + R", hl.dsp.exec_cmd(qsScripts .. "/record.sh --fullscreen --sound"),
     { locked = true, description = "Utilities: Record screen (with sound)" })
@@ -310,7 +309,7 @@ hl.bind("SUPER + C", hl.dsp.exec_cmd(codeEditor), { description = "App: Code edi
 hl.bind("CTRL + SUPER + SHIFT + ALT + W", hl.dsp.exec_cmd(officeSoftware), { description = "App: Office software" })
 hl.bind("SUPER + X", hl.dsp.exec_cmd(textEditor), { description = "App: Text editor" })
 hl.bind("CTRL + SUPER + V", hl.dsp.exec_cmd(volumeMixer), { description = "App: Volume mixer" })
-hl.bind("SUPER + I", hl.dsp.exec_cmd(settingsApp), { description = "App: Settings app" })
+hl.bind("SUPER + I", hl.dsp.exec_cmd(qsIpcCall .. " controlCenter open"), { description = "App: Settings app" })
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd(taskManager), { description = "App: Task manager" })
 
 --# Cursed stuff
