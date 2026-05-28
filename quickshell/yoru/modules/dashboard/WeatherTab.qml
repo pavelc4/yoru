@@ -78,26 +78,27 @@ Item {
                 Layout.fillWidth: true
                 spacing: 16
 
-                // Top row: Current Weather Card
-                StyledRect {
+                // Row 1: Left tall card & Right two cards
+                RowLayout {
                     Layout.fillWidth: true
-                    implicitHeight: 180
-                    radius: 20
-                    color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
+                    spacing: 16
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.margins: 24
-                        spacing: 20
+                    // Left Tall Current Weather Card
+                    StyledRect {
+                        Layout.preferredWidth: parent.width * 0.45
+                        implicitHeight: 236
+                        radius: 20
+                        color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
 
-                        // Left info
                         ColumnLayout {
-                            Layout.fillHeight: true
-                            spacing: 4
-                            Layout.alignment: Qt.AlignLeft
+                            anchors.fill: parent
+                            anchors.margins: 20
+                            spacing: 8
 
+                            // Location
                             RowLayout {
                                 spacing: 6
+                                Layout.alignment: Qt.AlignLeft
                                 MaterialIcon {
                                     text: "location_on"
                                     font.pointSize: 12
@@ -111,90 +112,174 @@ Item {
                                 }
                             }
 
+                            // Center Large Weather Icon
+                            MaterialIcon {
+                                Layout.alignment: Qt.AlignHCenter
+                                text: Weather.icon || "cloud"
+                                font.pointSize: 64
+                                color: Colours.palette.m3secondary
+                            }
+
                             // Stacked Temp
                             Row {
+                                Layout.alignment: Qt.AlignHCenter
                                 spacing: 2
                                 StyledText {
                                     text: Weather.cc ? (GlobalConfig.services.useFahrenheit ? `${Weather.cc.tempF}°` : `${Weather.cc.tempC}°`) : "--°"
-                                    font.pointSize: 52
+                                    font.pointSize: 48
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurface
                                 }
                                 StyledText {
                                     text: GlobalConfig.services.useFahrenheit ? "F" : "C"
-                                    font.pointSize: 18
+                                    font.pointSize: 16
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3primary
                                     anchors.top: parent.top
-                                    anchors.topMargin: 12
+                                    anchors.topMargin: 10
                                 }
                             }
 
                             StyledText {
+                                Layout.alignment: Qt.AlignHCenter
                                 text: Weather.description || qsTr("Unknown")
                                 font.pointSize: 13
                                 font.weight: Font.Medium
                                 color: Colours.palette.m3primary
                             }
                         }
+                    }
 
-                        Item { Layout.fillWidth: true }
+                    // Right Side: Two Stacked Cards (Humidity & Wind)
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        spacing: 16
 
-                        // Right large weather icon
-                        MaterialIcon {
-                            Layout.alignment: Qt.AlignVCenter
-                            text: Weather.icon || "cloud"
-                            font.pointSize: 64
-                            color: Colours.palette.m3secondary
+                        // Humidity Card
+                        DetailCardHorizontal {
+                            Layout.fillWidth: true
+                            implicitHeight: 110
+                            icon: "water_drop"
+                            iconColor: Colours.palette.m3primary
+                            label: qsTr("HUMIDITY")
+                            value: Weather.humidity + "%"
+                        }
+
+                        // Wind Card
+                        DetailCardHorizontal {
+                            Layout.fillWidth: true
+                            implicitHeight: 110
+                            icon: "air"
+                            iconColor: Colours.palette.m3secondary
+                            label: qsTr("WIND")
+                            value: Weather.windSpeed ? Weather.windSpeed.toFixed(1) + " km/h" : "--"
                         }
                     }
                 }
 
-                // Middle row: 2x2 Details Card Grid
-                GridLayout {
+                // Row 2: Wide split Sunrise & Feels Like card
+                StyledRect {
                     Layout.fillWidth: true
-                    columns: 2
-                    rowSpacing: 16
-                    columnSpacing: 16
+                    implicitHeight: 70
+                    radius: 20
+                    color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
 
-                    DetailCard {
-                        Layout.fillWidth: true
-                        implicitHeight: 70
-                        icon: "water_drop"
-                        iconColor: Colours.palette.m3primary
-                        label: qsTr("HUMIDITY")
-                        value: Weather.humidity + "%"
-                    }
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.margins: 12
+                        spacing: 0
 
-                    DetailCard {
-                        Layout.fillWidth: true
-                        implicitHeight: 70
-                        icon: "air"
-                        iconColor: Colours.palette.m3secondary
-                        label: qsTr("WIND")
-                        value: Weather.windSpeed ? Weather.windSpeed.toFixed(1) + " km/h" : "--"
-                    }
+                        // Left section: Sunrise
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 12
+                            Layout.leftMargin: 12
 
-                    DetailCard {
-                        Layout.fillWidth: true
-                        implicitHeight: 70
-                        icon: "thermostat"
-                        iconColor: Colours.palette.m3tertiary
-                        label: qsTr("FEELS LIKE")
-                        value: Weather.feelsLike
-                    }
+                            StyledRect {
+                                implicitWidth: 36
+                                implicitHeight: 36
+                                radius: 18
+                                color: Qt.alpha(Colours.palette.m3tertiary, 0.15)
 
-                    DetailCard {
-                        Layout.fillWidth: true
-                        implicitHeight: 70
-                        icon: "wb_twilight"
-                        iconColor: Colours.palette.m3secondary
-                        label: qsTr("SUNRISE")
-                        value: Weather.sunrise
+                                MaterialIcon {
+                                    anchors.centerIn: parent
+                                    text: "wb_twilight"
+                                    font.pointSize: 14
+                                    color: Colours.palette.m3tertiary
+                                }
+                            }
+
+                            RowLayout {
+                                spacing: 8
+                                StyledText {
+                                    text: qsTr("SUNRISE")
+                                    font.pointSize: 8.5
+                                    font.weight: Font.Bold
+                                    color: Colours.palette.m3onSurfaceVariant
+                                }
+
+                                StyledText {
+                                    text: Weather.sunrise
+                                    font.pointSize: 12
+                                    font.weight: Font.Bold
+                                    color: Colours.palette.m3onSurface
+                                }
+                            }
+                        }
+
+                        // Vertical Divider
+                        StyledRect {
+                            implicitWidth: 1
+                            Layout.fillHeight: true
+                            Layout.topMargin: 4
+                            Layout.bottomMargin: 4
+                            color: Qt.alpha(Colours.palette.m3onSurface, 0.1)
+                        }
+
+                        // Right section: Feels Like
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 12
+                            Layout.rightMargin: 12
+                            Layout.alignment: Qt.AlignRight
+
+                            Item { Layout.fillWidth: true }
+
+                            RowLayout {
+                                spacing: 8
+                                StyledText {
+                                    text: qsTr("FEELS LIKE")
+                                    font.pointSize: 8.5
+                                    font.weight: Font.Bold
+                                    color: Colours.palette.m3onSurfaceVariant
+                                }
+
+                                StyledText {
+                                    text: Weather.feelsLike
+                                    font.pointSize: 12
+                                    font.weight: Font.Bold
+                                    color: Colours.palette.m3onSurface
+                                }
+                            }
+
+                            StyledRect {
+                                implicitWidth: 36
+                                implicitHeight: 36
+                                radius: 18
+                                color: Qt.alpha(Colours.palette.m3primary, 0.15)
+
+                                MaterialIcon {
+                                    anchors.centerIn: parent
+                                    text: "thermostat"
+                                    font.pointSize: 14
+                                    color: Colours.palette.m3primary
+                                }
+                            }
+                        }
                     }
                 }
 
-                // Bottom row: Forecast Card
+                // Row 3: Forecast Card
                 StyledRect {
                     Layout.fillWidth: true
                     implicitHeight: forecastCol.implicitHeight + 32
@@ -290,8 +375,8 @@ Item {
         }
     }
 
-    component DetailCard: StyledRect {
-        id: detailCard
+    component DetailCardHorizontal: StyledRect {
+        id: detCardHoriz
         radius: 16
         color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
 
@@ -302,38 +387,38 @@ Item {
 
         RowLayout {
             anchors.fill: parent
-            anchors.margins: 12
-            spacing: 12
+            anchors.margins: 20
+            spacing: 16
 
             StyledRect {
-                implicitWidth: 36
-                implicitHeight: 36
-                radius: 18
-                color: Qt.alpha(detailCard.iconColor, 0.15)
+                implicitWidth: 44
+                implicitHeight: 44
+                radius: 22
+                color: Qt.alpha(detCardHoriz.iconColor, 0.15)
                 Layout.alignment: Qt.AlignVCenter
 
                 MaterialIcon {
                     anchors.centerIn: parent
-                    text: detailCard.icon
-                    font.pointSize: 14
-                    color: detailCard.iconColor
+                    text: detCardHoriz.icon
+                    font.pointSize: 16
+                    color: detCardHoriz.iconColor
                 }
             }
 
             ColumnLayout {
-                spacing: 2
+                spacing: 4
                 Layout.alignment: Qt.AlignVCenter
 
                 StyledText {
-                    text: detailCard.label
+                    text: detCardHoriz.label
                     font.pointSize: 8.5
                     font.weight: Font.Bold
                     color: Colours.palette.m3onSurfaceVariant
                 }
 
                 StyledText {
-                    text: detailCard.value
-                    font.pointSize: 12
+                    text: detCardHoriz.value
+                    font.pointSize: 16
                     font.weight: Font.Bold
                     color: Colours.palette.m3onSurface
                 }
