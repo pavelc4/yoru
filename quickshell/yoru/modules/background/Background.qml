@@ -153,6 +153,24 @@ Variants {
                 wallpaper: behindClock
                 absX: clockLoader.x
                 absY: clockLoader.y
+                dragTarget: clockLoader
+            }
+        }
+
+        Loader {
+            id: weatherLoader
+
+            asynchronous: true
+            active: Config.background.desktopClock.enabled
+
+            anchors.top: clockLoader.top
+            anchors.left: clockLoader.state.indexOf("right") === -1 ? clockLoader.right : undefined
+            anchors.right: clockLoader.state.indexOf("right") !== -1 ? clockLoader.left : undefined
+            anchors.leftMargin: 20
+            anchors.rightMargin: 20
+
+            sourceComponent: DesktopWeather {
+                dragTarget: weatherLoader
             }
         }
     }

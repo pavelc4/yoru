@@ -1,6 +1,9 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Yoru.Config
+import qs.components
+import qs.services
 import "../../../components"
 
 Item {

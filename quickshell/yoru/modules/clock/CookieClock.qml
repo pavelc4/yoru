@@ -4,6 +4,8 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
 import Quickshell.Io
+import qs.components
+import qs.services
 import "dateIndicator"
 import "minuteMarks"
 import "../../components"
@@ -15,16 +17,16 @@ Item {
     property real implicitSize: 230
 
     // Style properties
-    property int sides: 12
-    property string dialNumberStyle: "full"
+    property int sides: 7
+    property string dialNumberStyle: "none"
     property string hourHandStyle: "fill"
-    property string minuteHandStyle: "medium"
+    property string minuteHandStyle: "bold"
     property string secondHandStyle: "dot"
     property string dateStyle: "bubble"
     property bool constantlyRotate: false
     property bool useSineCookie: false
-    property bool hourMarks: true
-    property bool timeIndicators: true
+    property bool hourMarks: false
+    property bool timeIndicators: false
 
     property color colShadow: Colours.palette.m3shadow
     property color colBackground: Colours.palette.m3primaryContainer
@@ -47,6 +49,15 @@ Item {
         z: 0
         visible: root.useSineCookie
         active: root.useSineCookie
+
+        rotation: root.clockSecond * 6
+        Behavior on rotation {
+            RotationAnimation {
+                duration: 250
+                easing.type: Easing.OutBack
+            }
+        }
+
         sourceComponent: SineCookie {
             implicitSize: root.implicitSize
             sides: root.sides
@@ -58,6 +69,15 @@ Item {
         z: 0
         visible: !root.useSineCookie
         active: !root.useSineCookie
+
+        rotation: root.clockSecond * 6
+        Behavior on rotation {
+            RotationAnimation {
+                duration: 250
+                easing.type: Easing.OutBack
+            }
+        }
+
         sourceComponent: MaterialCookie {
             implicitSize: root.implicitSize
             sides: root.sides

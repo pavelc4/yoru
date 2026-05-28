@@ -9,7 +9,7 @@ Item {
 
     required property int clockSecond
     property real handWidth: 2
-    property real handLength: 95
+    property real handLength: parent.width * 0.38
     property real dotSize: 20
     property string style: "dot"
     property color color: Colours.palette.m3primary

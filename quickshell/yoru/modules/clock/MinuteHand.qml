@@ -9,7 +9,7 @@ Item {
 
     required property int clockMinute
     property string style: "medium"
-    property real handLength: 95
+    property real handLength: parent.width * 0.38
     property real handWidth: style === "bold" ? 20 : style === "medium" ? 12 : 5
     property color color: Colours.palette.m3tertiary
 

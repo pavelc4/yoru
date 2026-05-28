@@ -17,6 +17,21 @@ Item {
 
     property bool showAnalog: true
     property real clockScale: Config.background.desktopClock.scale
+
+    property Item dragTarget: null
+    property int clockSides: 7
+    property string clockDialNumberStyle: "none"
+    property bool clockHourMarks: false
+    property bool clockTimeIndicators: false
+
+    property int clockColorIndex: 4 // default solid charcoal dark
+    readonly property list<color> clockColorPresets: [
+        Colours.palette.m3surfaceContainerHighest,
+        Colours.palette.m3primaryContainer,
+        Colours.palette.m3secondaryContainer,
+        Colours.palette.m3surface,
+        "#2C2C2C" // Charcoal dark / anime
+    ]
     readonly property bool bgEnabled: Config.background.desktopClock.background.enabled
     readonly property bool blurEnabled: bgEnabled && Config.background.desktopClock.background.blur && !GameMode.enabled
     readonly property bool invertColors: Config.background.desktopClock.invertColors
@@ -25,8 +40,8 @@ Item {
     readonly property color safeSecondary: useLightSet ? Colours.palette.m3secondaryContainer : Colours.palette.m3secondary
     readonly property color safeTertiary: useLightSet ? Colours.palette.m3tertiaryContainer : Colours.palette.m3tertiary
 
-    implicitWidth: showAnalog ? (200 * root.clockScale + Tokens.padding.large * 4 * root.clockScale) : (layout.implicitWidth + (Tokens.padding.large * 4 * root.clockScale))
-    implicitHeight: showAnalog ? (200 * root.clockScale + Tokens.padding.large * 2 * root.clockScale) : (layout.implicitHeight + (Tokens.padding.large * 2 * root.clockScale))
+    implicitWidth: showAnalog ? (250 * root.clockScale + Tokens.padding.large * 4 * root.clockScale) : (layout.implicitWidth + (Tokens.padding.large * 4 * root.clockScale))
+    implicitHeight: showAnalog ? (250 * root.clockScale + Tokens.padding.large * 2 * root.clockScale) : (layout.implicitHeight + (Tokens.padding.large * 2 * root.clockScale))
 
     Item {
         id: clockContainer
@@ -73,9 +88,60 @@ Item {
         }
 
         MouseArea {
+            id: dragArea
             anchors.fill: parent
-            onClicked: {
-                root.showAnalog = !root.showAnalog
+            drag.target: root.dragTarget
+            drag.axis: Drag.XAndYAxis
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+            onPressed: {
+                if (root.dragTarget && root.dragTarget.anchors) {
+                    var curX = root.dragTarget.x;
+                    var curY = root.dragTarget.y;
+                    root.dragTarget.anchors.top = undefined;
+                    root.dragTarget.anchors.bottom = undefined;
+                    root.dragTarget.anchors.left = undefined;
+                    root.dragTarget.anchors.right = undefined;
+                    root.dragTarget.anchors.horizontalCenter = undefined;
+                    root.dragTarget.anchors.verticalCenter = undefined;
+                    root.dragTarget.x = curX;
+                    root.dragTarget.y = curY;
+                }
+            }
+
+            onClicked: (mouse) => {
+                if (mouse.button === Qt.RightButton) {
+                    // Right click cycles analog clock sides / shapes!
+                    const sideOptions = [0, 4, 6, 7, 9, 12];
+                    let currIndex = sideOptions.indexOf(root.clockSides);
+                    let nextIndex = (currIndex + 1) % sideOptions.length;
+                    root.clockSides = sideOptions[nextIndex];
+                } else {
+                    // Left click toggles analog/digital!
+                    root.showAnalog = !root.showAnalog;
+                }
+            }
+
+            onDoubleClicked: (mouse) => {
+                if (mouse.button === Qt.LeftButton) {
+                    // Double click cycles dial number style / complexity!
+                    if (root.clockDialNumberStyle === "none") {
+                        root.clockDialNumberStyle = "dots";
+                        root.clockHourMarks = true;
+                        root.clockTimeIndicators = false;
+                    } else if (root.clockDialNumberStyle === "dots") {
+                        root.clockDialNumberStyle = "full";
+                        root.clockHourMarks = false;
+                        root.clockTimeIndicators = true;
+                    } else {
+                        root.clockDialNumberStyle = "none";
+                        root.clockHourMarks = false;
+                        root.clockTimeIndicators = false;
+                    }
+                } else if (mouse.button === Qt.RightButton) {
+                    // Double right-click cycles clock background color presets!
+                    root.clockColorIndex = (root.clockColorIndex + 1) % root.clockColorPresets.length;
+                }
             }
         }
 
@@ -85,8 +151,12 @@ Item {
             visible: active
             anchors.centerIn: parent
             sourceComponent: CookieClock {
-                implicitSize: 180 * root.clockScale
-                colBackground: "transparent"
+                implicitSize: 230 * root.clockScale
+                sides: root.clockSides
+                dialNumberStyle: root.clockDialNumberStyle
+                hourMarks: root.clockHourMarks
+                timeIndicators: root.clockTimeIndicators
+                colBackground: root.clockColorPresets[root.clockColorIndex]
                 colHourHand: root.safePrimary
                 colMinuteHand: root.safeSecondary
                 colSecondHand: root.safeTertiary

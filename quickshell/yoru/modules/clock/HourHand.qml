@@ -8,7 +8,7 @@ Item {
 
     required property int clockHour
     required property int clockMinute
-    property real handLength: 72
+    property real handLength: parent.width * 0.28
     property real handWidth: 20
     property string style: "fill"
     property color color: Colours.palette.m3primary
