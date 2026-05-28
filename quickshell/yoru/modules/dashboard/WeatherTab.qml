@@ -85,63 +85,67 @@ Item {
 
                     // Left Tall Current Weather Card
                     StyledRect {
-                        Layout.preferredWidth: parent.width * 0.45
+                        Layout.preferredWidth: mainCol.width * 0.45
                         implicitHeight: 236
                         radius: 20
                         color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
 
-                        ColumnLayout {
-                            anchors.fill: parent
-                            anchors.margins: 20
-                            spacing: 8
-
-                            // Location
-                            RowLayout {
-                                spacing: 6
-                                Layout.alignment: Qt.AlignLeft
-                                MaterialIcon {
-                                    text: "location_on"
-                                    font.pointSize: 12
-                                    color: Colours.palette.m3tertiary
-                                }
-                                StyledText {
-                                    text: Weather.city || qsTr("Loading...")
-                                    font.pointSize: 13
-                                    font.weight: Font.Medium
-                                    color: Colours.palette.m3onSurfaceVariant
-                                }
-                            }
-
-                            // Center Large Weather Icon
+                        Row {
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.topMargin: 20
+                            anchors.leftMargin: 20
+                            spacing: 6
                             MaterialIcon {
-                                Layout.alignment: Qt.AlignHCenter
+                                text: "location_on"
+                                font.pointSize: 12
+                                color: Colours.palette.m3tertiary
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                            StyledText {
+                                text: Weather.city || qsTr("Loading...")
+                                font.pointSize: 13
+                                font.weight: Font.Medium
+                                color: Colours.palette.m3onSurfaceVariant
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Column {
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenterOffset: 12
+                            spacing: 4
+                            width: parent.width - 32
+
+                            MaterialIcon {
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 text: Weather.icon || "cloud"
                                 font.pointSize: 64
                                 color: Colours.palette.m3secondary
                             }
 
-                            // Stacked Temp
                             Row {
-                                Layout.alignment: Qt.AlignHCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 spacing: 2
                                 StyledText {
-                                    text: Weather.cc ? (GlobalConfig.services.useFahrenheit ? `${Weather.cc.tempF}°` : `${Weather.cc.tempC}°`) : "--°"
+                                    text: Weather.cc ? (GlobalConfig.services.useFahrenheit ? `${Weather.cc.tempF}` : `${Weather.cc.tempC}`) : "--"
                                     font.pointSize: 48
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurface
                                 }
                                 StyledText {
-                                    text: GlobalConfig.services.useFahrenheit ? "F" : "C"
-                                    font.pointSize: 16
+                                    text: "°" + (GlobalConfig.services.useFahrenheit ? "F" : "C")
+                                    font.pointSize: 18
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3primary
                                     anchors.top: parent.top
-                                    anchors.topMargin: 10
+                                    anchors.topMargin: 8
                                 }
                             }
 
                             StyledText {
-                                Layout.alignment: Qt.AlignHCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
                                 text: Weather.description || qsTr("Unknown")
                                 font.pointSize: 13
                                 font.weight: Font.Medium
@@ -180,26 +184,27 @@ Item {
                 // Row 2: Wide split Sunrise & Feels Like card
                 StyledRect {
                     Layout.fillWidth: true
-                    implicitHeight: 70
+                    implicitHeight: 64
                     radius: 20
                     color: Colours.layer(Colours.palette.m3surfaceContainerHigh, 1)
 
                     RowLayout {
                         anchors.fill: parent
-                        anchors.margins: 12
+                        anchors.leftMargin: 20
+                        anchors.rightMargin: 20
                         spacing: 0
 
                         // Left section: Sunrise
-                        RowLayout {
-                            Layout.fillWidth: true
+                        Row {
                             spacing: 12
-                            Layout.leftMargin: 12
+                            Layout.alignment: Qt.AlignVCenter
 
                             StyledRect {
-                                implicitWidth: 36
-                                implicitHeight: 36
+                                width: 36
+                                height: 36
                                 radius: 18
                                 color: Qt.alpha(Colours.palette.m3tertiary, 0.15)
+                                anchors.verticalCenter: parent.verticalCenter
 
                                 MaterialIcon {
                                     anchors.centerIn: parent
@@ -209,13 +214,15 @@ Item {
                                 }
                             }
 
-                            RowLayout {
+                            Row {
                                 spacing: 8
+                                anchors.verticalCenter: parent.verticalCenter
                                 StyledText {
                                     text: qsTr("SUNRISE")
                                     font.pointSize: 8.5
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurfaceVariant
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
 
                                 StyledText {
@@ -223,35 +230,27 @@ Item {
                                     font.pointSize: 12
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurface
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
                         }
 
-                        // Vertical Divider
-                        StyledRect {
-                            implicitWidth: 1
-                            Layout.fillHeight: true
-                            Layout.topMargin: 4
-                            Layout.bottomMargin: 4
-                            color: Qt.alpha(Colours.palette.m3onSurface, 0.1)
-                        }
+                        Item { Layout.fillWidth: true }
 
                         // Right section: Feels Like
-                        RowLayout {
-                            Layout.fillWidth: true
+                        Row {
                             spacing: 12
-                            Layout.rightMargin: 12
-                            Layout.alignment: Qt.AlignRight
+                            Layout.alignment: Qt.AlignVCenter
 
-                            Item { Layout.fillWidth: true }
-
-                            RowLayout {
+                            Row {
                                 spacing: 8
+                                anchors.verticalCenter: parent.verticalCenter
                                 StyledText {
                                     text: qsTr("FEELS LIKE")
                                     font.pointSize: 8.5
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurfaceVariant
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
 
                                 StyledText {
@@ -259,14 +258,16 @@ Item {
                                     font.pointSize: 12
                                     font.weight: Font.Bold
                                     color: Colours.palette.m3onSurface
+                                    anchors.verticalCenter: parent.verticalCenter
                                 }
                             }
 
                             StyledRect {
-                                implicitWidth: 36
-                                implicitHeight: 36
+                                width: 36
+                                height: 36
                                 radius: 18
                                 color: Qt.alpha(Colours.palette.m3primary, 0.15)
+                                anchors.verticalCenter: parent.verticalCenter
 
                                 MaterialIcon {
                                     anchors.centerIn: parent
@@ -281,6 +282,7 @@ Item {
 
                 // Row 3: Forecast Card
                 StyledRect {
+                    id: forecastCard
                     Layout.fillWidth: true
                     implicitHeight: forecastCol.implicitHeight + 32
                     radius: 20
@@ -302,7 +304,10 @@ Item {
                         anchors.left: parent.left
                         anchors.right: parent.right
                         anchors.top: parent.top
-                        anchors.margins: 16
+                        anchors.leftMargin: 20
+                        anchors.rightMargin: 20
+                        anchors.topMargin: 16
+                        anchors.bottomMargin: 16
                         spacing: 16
 
                         Repeater {
@@ -315,8 +320,8 @@ Item {
                                 readonly property int dayIndex: index
                                 readonly property real dayMin: GlobalConfig.services.useFahrenheit ? modelData.minTempF : modelData.minTempC
                                 readonly property real dayMax: GlobalConfig.services.useFahrenheit ? modelData.maxTempF : modelData.maxTempC
-                                readonly property real leftPad: parent.parent.globalMax > parent.parent.globalMin ? (dayMin - parent.parent.globalMin) / (parent.parent.globalMax - parent.parent.globalMin) : 0
-                                readonly property real widthPct: parent.parent.globalMax > parent.parent.globalMin ? (dayMax - dayMin) / (parent.parent.globalMax - parent.parent.globalMin) : 1
+                                readonly property real leftPad: forecastCard.globalMax > forecastCard.globalMin ? (dayMin - forecastCard.globalMin) / (forecastCard.globalMax - forecastCard.globalMin) : 0
+                                readonly property real widthPct: forecastCard.globalMax > forecastCard.globalMin ? (dayMax - dayMin) / (forecastCard.globalMax - forecastCard.globalMin) : 1
 
                                 StyledText {
                                     Layout.preferredWidth: 60
@@ -345,26 +350,47 @@ Item {
                                         width: parent.width * widthPct
                                         height: parent.height
                                         radius: 4
-                                        color: dayIndex === 0 ? Colours.palette.m3primary : dayIndex === 1 ? Colours.palette.m3secondary : Colours.palette.m3tertiary
+                                        gradient: Gradient {
+                                            orientation: Gradient.Horizontal
+                                            GradientStop {
+                                                position: 0.0
+                                                color: dayIndex === 0 ? Qt.alpha(Colours.palette.m3primary, 0.5) :
+                                                       dayIndex === 1 ? Qt.alpha(Colours.palette.m3success, 0.5) :
+                                                       Qt.alpha(Colours.palette.m3tertiary, 0.5)
+                                            }
+                                            GradientStop {
+                                                position: 1.0
+                                                color: dayIndex === 0 ? Colours.palette.m3primary :
+                                                       dayIndex === 1 ? Colours.palette.m3success :
+                                                       Colours.palette.m3tertiary
+                                            }
+                                        }
                                     }
                                 }
 
                                 // Stacked High/Low Temps
-                                ColumnLayout {
-                                    spacing: 0
-                                    Layout.alignment: Qt.AlignRight
-                                    StyledText {
-                                        text: `${Math.round(dayMin)}°`
-                                        font.pointSize: 9
-                                        color: Colours.palette.m3onSurfaceVariant
-                                        Layout.alignment: Qt.AlignRight
-                                    }
-                                    StyledText {
-                                        text: `${Math.round(dayMax)}°`
-                                        font.pointSize: 13
-                                        font.weight: Font.Bold
-                                        color: Colours.palette.m3onSurface
-                                        Layout.alignment: Qt.AlignRight
+                                Item {
+                                    Layout.preferredWidth: 32
+                                    Layout.fillHeight: true
+
+                                    Column {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        anchors.right: parent.right
+                                        spacing: 1
+
+                                        StyledText {
+                                            text: `${Math.round(dayMin)}°`
+                                            font.pointSize: 9.5
+                                            color: Colours.palette.m3onSurfaceVariant
+                                            anchors.right: parent.right
+                                        }
+                                        StyledText {
+                                            text: `${Math.round(dayMax)}°`
+                                            font.pointSize: 13
+                                            font.weight: Font.Bold
+                                            color: Colours.palette.m3onSurface
+                                            anchors.right: parent.right
+                                        }
                                     }
                                 }
                             }
@@ -385,17 +411,18 @@ Item {
         property string label
         property string value
 
-        RowLayout {
-            anchors.fill: parent
-            anchors.margins: 20
-            spacing: 16
+        Row {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 24
+            spacing: 20
 
             StyledRect {
-                implicitWidth: 44
-                implicitHeight: 44
+                width: 44
+                height: 44
                 radius: 22
                 color: Qt.alpha(detCardHoriz.iconColor, 0.15)
-                Layout.alignment: Qt.AlignVCenter
+                anchors.verticalCenter: parent.verticalCenter
 
                 MaterialIcon {
                     anchors.centerIn: parent
@@ -405,9 +432,9 @@ Item {
                 }
             }
 
-            ColumnLayout {
+            Column {
+                anchors.verticalCenter: parent.verticalCenter
                 spacing: 4
-                Layout.alignment: Qt.AlignVCenter
 
                 StyledText {
                     text: detCardHoriz.label
@@ -418,7 +445,7 @@ Item {
 
                 StyledText {
                     text: detCardHoriz.value
-                    font.pointSize: 16
+                    font.pointSize: 18
                     font.weight: Font.Bold
                     color: Colours.palette.m3onSurface
                 }
